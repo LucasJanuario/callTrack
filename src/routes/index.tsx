@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Trash2, Plus, Phone } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Trash2, Plus, Phone, Pencil, Check, X } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
@@ -19,6 +20,7 @@ interface Call {
   ticket: string | null;
   numero: string;
   atendimento: string | null;
+  canal: string | null;
   call_date: string;
   created_at: string;
 }
@@ -31,7 +33,14 @@ function IndexPage() {
   const [ticket, setTicket] = useState("");
   const [numero, setNumero] = useState("");
   const [atendimento, setAtendimento] = useState("");
+  const [canal, setCanal] = useState("Fone");
   const [busy, setBusy] = useState(false);
+
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editTicket, setEditTicket] = useState("");
+  const [editNumero, setEditNumero] = useState("");
+  const [editAtendimento, setEditAtendimento] = useState("");
+  const [editCanal, setEditCanal] = useState("Fone");
 
   useEffect(() => {
     if (!loading && !user) nav({ to: "/auth" });
@@ -46,7 +55,7 @@ function IndexPage() {
     if (!user) return;
     const { data, error } = await supabase
       .from("calls")
-      .select("id,ticket,numero,atendimento,call_date,created_at")
+      .select("id,ticket,numero,atendimento,canal,call_date,created_at")
       .eq("user_id", user.id)
       .eq("call_date", date)
       .order("created_at", { ascending: true });
@@ -64,17 +73,44 @@ function IndexPage() {
       ticket: ticket.trim() || null,
       numero: numero.trim(),
       atendimento: atendimento.trim() || null,
+      canal: canal,
     });
     setBusy(false);
     if (error) return toast.error(error.message);
-    setTicket(""); setNumero(""); setAtendimento("");
+    setTicket(""); setNumero(""); setAtendimento(""); setCanal("Fone");
     void load();
   }
 
   async function remove(id: string) {
     const { error } = await supabase.from("calls").delete().eq("id", id);
-    if (error) toast.error(error.message);
-    else { setCalls((c) => c.filter((x) => x.id !== id)); toast.success("Removido"); }
+    if (error) return toast.error(error.message);
+    void load();
+  }
+
+  function startEdit(c: Call) {
+    setEditId(c.id);
+    setEditTicket(c.ticket ?? "");
+    setEditNumero(c.numero);
+    setEditAtendimento(c.atendimento ?? "");
+    setEditCanal(c.canal ?? "Fone");
+  }
+
+  function cancelEdit() {
+    setEditId(null);
+  }
+
+  async function saveEdit(id: string) {
+    if (!editNumero.trim()) return toast.error("Número é obrigatório");
+    const { error } = await supabase.from("calls").update({
+      ticket: editTicket.trim() || null,
+      numero: editNumero.trim(),
+      atendimento: editAtendimento.trim() || null,
+      canal: editCanal,
+    }).eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Atualizado");
+    setEditId(null);
+    void load();
   }
 
   if (loading || !user) return null;
@@ -106,42 +142,90 @@ function IndexPage() {
         </div>
 
         <Card className="p-4 shadow-[var(--shadow-soft)]">
-          <form onSubmit={add} className="grid grid-cols-1 md:grid-cols-[140px_1fr_1fr_auto] gap-3 items-end">
-            <div className="space-y-1.5">
+          <form
+            onSubmit={add}
+            className="grid grid-cols-1 md:grid-cols-[140px_1fr_1fr_130px_auto] gap-3 items-end"
+          >
+            <div className="flex flex-col gap-1.5">
               <Label htmlFor="ticket" className="text-xs">Ticket</Label>
-              <Input id="ticket" value={ticket} onChange={(e) => setTicket(e.target.value)} placeholder="opcional" />
+              <Input id="ticket" className="h-10" value={ticket} onChange={(e) => setTicket(e.target.value)} placeholder="opcional" />
             </div>
-            <div className="space-y-1.5">
+
+            <div className="flex flex-col gap-1.5">
               <Label htmlFor="numero" className="text-xs">Número *</Label>
-              <Input id="numero" required value={numero} onChange={(e) => setNumero(e.target.value)} placeholder="ex: 30534-83996952205" />
+              <Input id="numero" className="h-10" required value={numero} onChange={(e) => setNumero(e.target.value)} placeholder="ex: 30534-83996952205" />
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="atend" className="text-xs">Atendimento</Label>
-              <Input id="atend" value={atendimento} onChange={(e) => setAtendimento(e.target.value)} placeholder="ex: encaminhado para s2" />
+
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="atendimento" className="text-xs">Atendimento</Label>
+              <Input id="atendimento" className="h-10" value={atendimento} onChange={(e) => setAtendimento(e.target.value)} placeholder="ex: encaminhado para s2" />
             </div>
-            <Button type="submit" disabled={busy}>
+
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="canal" className="text-xs">Canal</Label>
+              <Select value={canal} onValueChange={setCanal}>
+                <SelectTrigger id="canal" className="h-10 w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Fone">Fone</SelectItem>
+                  <SelectItem value="Chat">Chat</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Button type="submit" disabled={busy} className="h-10">
               <Plus className="size-4" /> Adicionar
             </Button>
           </form>
         </Card>
 
         <Card className="overflow-hidden shadow-[var(--shadow-soft)]">
-          <div className="grid grid-cols-[60px_140px_1fr_1fr_60px] bg-muted/60 text-xs font-medium uppercase tracking-wide text-muted-foreground px-4 py-2">
-            <div>#</div><div>Ticket</div><div>Número</div><div>Atendimento</div><div></div>
+          <div className="grid grid-cols-[60px_120px_1fr_1fr_90px_96px] bg-muted/60 text-xs font-medium uppercase tracking-wide text-muted-foreground px-4 py-2">
+            <div>#</div><div>Ticket</div><div>Número</div><div>Atendimento</div><div>Canal</div><div></div>
           </div>
           {calls.length === 0 ? (
             <div className="p-10 text-center text-sm text-muted-foreground">Nenhuma ligação registrada nesta data.</div>
           ) : calls.map((c, i) => (
-            <div key={c.id} className="grid grid-cols-[60px_140px_1fr_1fr_60px] items-center px-4 py-2.5 border-t text-sm">
+            <div key={c.id} className="grid grid-cols-[60px_120px_1fr_1fr_90px_96px] items-center px-4 py-2.5 border-t text-sm">
               <div className="text-muted-foreground">{i + 1}</div>
-              <div>{c.ticket || "—"}</div>
-              <div className="font-mono">{c.numero}</div>
-              <div className="text-muted-foreground">{c.atendimento || "—"}</div>
-              <div className="flex justify-end">
-                <Button variant="ghost" size="icon" onClick={() => remove(c.id)}>
-                  <Trash2 className="size-4 text-destructive" />
-                </Button>
-              </div>
+              {editId === c.id ? (
+                <>
+                  <Input value={editTicket} onChange={(e) => setEditTicket(e.target.value)} placeholder="opcional" className="h-7 text-sm" />
+                  <Input value={editNumero} onChange={(e) => setEditNumero(e.target.value)} required className="h-7 text-sm font-mono" />
+                  <Input value={editAtendimento} onChange={(e) => setEditAtendimento(e.target.value)} className="h-7 text-sm" />
+                  <Select value={editCanal} onValueChange={setEditCanal}>
+                    <SelectTrigger className="h-7 text-sm"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Fone">Fone</SelectItem>
+                      <SelectItem value="Chat">Chat</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <div className="flex justify-end gap-1">
+                    <Button variant="ghost" size="icon" onClick={() => saveEdit(c.id)}>
+                      <Check className="size-4 text-green-600" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={cancelEdit}>
+                      <X className="size-4 text-muted-foreground" />
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>{c.ticket || "—"}</div>
+                  <div className="font-mono">{c.numero}</div>
+                  <div className="text-muted-foreground">{c.atendimento || "—"}</div>
+                  <div>{c.canal || "—"}</div>
+                  <div className="flex justify-end gap-1">
+                    <Button variant="ghost" size="icon" onClick={() => startEdit(c)}>
+                      <Pencil className="size-4 text-muted-foreground" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => remove(c.id)}>
+                      <Trash2 className="size-4 text-destructive" />
+                    </Button>
+                  </div>
+                </>
+              )}
             </div>
           ))}
         </Card>
