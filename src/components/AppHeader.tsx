@@ -29,8 +29,14 @@ export function AppHeader() {
               <span className="inline-flex items-center gap-1.5"><Users className="size-4" /> Funcionários</span>
             </Link>
           )}
+          <Link to="/anotacoes" className="px-3 py-1.5 rounded-md text-sm hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
+            <span className="inline-flex items-center gap-1.5"><StickyNote className="size-4" /> Anotações</span>
+          </Link>
         </nav>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" onClick={toggle} aria-label="Alternar tema">
+            {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+          </Button>
           <div className="text-right hidden sm:block">
             <div className="text-sm font-medium leading-tight">{fullName ?? "Usuário"}</div>
             <div className="text-xs text-muted-foreground capitalize">{role === "admin" ? "Administrador" : "Funcionário"}</div>
