@@ -26,21 +26,23 @@ function RelatorioPage() {
   const [from, setFrom] = useState(today);
   const [to, setTo] = useState(today);
   const [employee, setEmployee] = useState<string>("all");
+  const [canal, setCanal] = useState<string>("all");
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [calls, setCalls] = useState<Call[]>([]);
 
   useEffect(() => { if (!loading && !user) nav({ to: "/auth" }); }, [loading, user, nav]);
   useEffect(() => { void loadProfiles(); }, []);
-  useEffect(() => { void run(); }, [from, to, employee]);
+  useEffect(() => { void run(); }, [from, to, employee, canal]);
 
   async function loadProfiles() {
     const { data } = await supabase.from("profiles").select("id,full_name").order("full_name");
     setProfiles(data ?? []);
   }
   async function run() {
-    let q = supabase.from("calls").select("id,user_id,call_date,ticket,numero,atendimento")
+    let q = supabase.from("calls").select("id,user_id,call_date,ticket,numero,atendimento,canal")
       .gte("call_date", from).lte("call_date", to).order("call_date").order("created_at");
     if (employee !== "all") q = q.eq("user_id", employee);
+    if (canal !== "all") q = q.eq("canal", canal);
     const { data, error } = await q;
     if (error) toast.error(error.message); else setCalls(data ?? []);
   }
