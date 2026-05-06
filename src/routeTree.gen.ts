@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as RelatorioRouteImport } from './routes/relatorio'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AnotacoesRouteImport } from './routes/anotacoes'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -30,6 +31,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnotacoesRoute = AnotacoesRouteImport.update({
+  id: '/anotacoes',
+  path: '/anotacoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -44,6 +50,7 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/anotacoes': typeof AnotacoesRoute
   '/auth': typeof AuthRoute
   '/relatorio': typeof RelatorioRoute
   '/setup': typeof SetupRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/anotacoes': typeof AnotacoesRoute
   '/auth': typeof AuthRoute
   '/relatorio': typeof RelatorioRoute
   '/setup': typeof SetupRoute
@@ -59,21 +67,30 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/anotacoes': typeof AnotacoesRoute
   '/auth': typeof AuthRoute
   '/relatorio': typeof RelatorioRoute
   '/setup': typeof SetupRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/auth' | '/relatorio' | '/setup'
+  fullPaths: '/' | '/admin' | '/anotacoes' | '/auth' | '/relatorio' | '/setup'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/auth' | '/relatorio' | '/setup'
-  id: '__root__' | '/' | '/admin' | '/auth' | '/relatorio' | '/setup'
+  to: '/' | '/admin' | '/anotacoes' | '/auth' | '/relatorio' | '/setup'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/anotacoes'
+    | '/auth'
+    | '/relatorio'
+    | '/setup'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  AnotacoesRoute: typeof AnotacoesRoute
   AuthRoute: typeof AuthRoute
   RelatorioRoute: typeof RelatorioRoute
   SetupRoute: typeof SetupRoute
@@ -102,6 +119,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/anotacoes': {
+      id: '/anotacoes'
+      path: '/anotacoes'
+      fullPath: '/anotacoes'
+      preLoaderRoute: typeof AnotacoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -122,6 +146,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  AnotacoesRoute: AnotacoesRoute,
   AuthRoute: AuthRoute,
   RelatorioRoute: RelatorioRoute,
   SetupRoute: SetupRoute,
@@ -129,3 +154,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
