@@ -6,6 +6,7 @@ import { Phone, LogOut, FileBarChart2, Users, StickyNote, Sun, Moon } from "luci
 
 export function AppHeader() {
   const { fullName, role, signOut } = useAuth();
+  const { theme, toggle } = useTheme();
   const nav = useNavigate();
   return (
     <header className="border-b bg-card/80 backdrop-blur sticky top-0 z-40">
