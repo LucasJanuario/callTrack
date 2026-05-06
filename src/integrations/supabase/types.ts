@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           atendimento: string | null
           call_date: string
+          canal: string
           created_at: string
           id: string
           numero: string
@@ -27,6 +28,7 @@ export type Database = {
         Insert: {
           atendimento?: string | null
           call_date?: string
+          canal?: string
           created_at?: string
           id?: string
           numero: string
@@ -36,6 +38,7 @@ export type Database = {
         Update: {
           atendimento?: string | null
           call_date?: string
+          canal?: string
           created_at?: string
           id?: string
           numero?: string
