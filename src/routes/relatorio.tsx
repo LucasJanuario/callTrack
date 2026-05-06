@@ -77,7 +77,7 @@ function RelatorioPage() {
         </div>
 
         <Card className="p-4 print:hidden">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <div className="space-y-1.5">
               <Label className="text-xs">Funcionário</Label>
               <Select value={employee} onValueChange={setEmployee}>
@@ -85,6 +85,17 @@ function RelatorioPage() {
                 <SelectContent>
                   <SelectItem value="all">Todos</SelectItem>
                   {profiles.map((p) => <SelectItem key={p.id} value={p.id}>{p.full_name}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Canal</Label>
+              <Select value={canal} onValueChange={setCanal}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="Fone">Fone</SelectItem>
+                  <SelectItem value="Chat">Chat</SelectItem>
                 </SelectContent>
               </Select>
             </div>
