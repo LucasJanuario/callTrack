@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
+import { useTheme } from "@/hooks/useTheme";
 import { Button } from "@/components/ui/button";
-import { Phone, LogOut, FileBarChart2, Users } from "lucide-react";
+import { Phone, LogOut, FileBarChart2, Users, StickyNote, Sun, Moon } from "lucide-react";
 
 export function AppHeader() {
   const { fullName, role, signOut } = useAuth();
