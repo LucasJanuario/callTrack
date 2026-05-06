@@ -1,10 +1,12 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
+import { useTheme } from "@/hooks/useTheme";
 import { Button } from "@/components/ui/button";
-import { Phone, LogOut, FileBarChart2, Users } from "lucide-react";
+import { Phone, LogOut, FileBarChart2, Users, StickyNote, Sun, Moon } from "lucide-react";
 
 export function AppHeader() {
   const { fullName, role, signOut } = useAuth();
+  const { theme, toggle } = useTheme();
   const nav = useNavigate();
   return (
     <header className="border-b bg-card/80 backdrop-blur sticky top-0 z-40">
@@ -27,8 +29,14 @@ export function AppHeader() {
               <span className="inline-flex items-center gap-1.5"><Users className="size-4" /> Funcionários</span>
             </Link>
           )}
+          <Link to="/anotacoes" className="px-3 py-1.5 rounded-md text-sm hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
+            <span className="inline-flex items-center gap-1.5"><StickyNote className="size-4" /> Anotações</span>
+          </Link>
         </nav>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" onClick={toggle} aria-label="Alternar tema">
+            {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+          </Button>
           <div className="text-right hidden sm:block">
             <div className="text-sm font-medium leading-tight">{fullName ?? "Usuário"}</div>
             <div className="text-xs text-muted-foreground capitalize">{role === "admin" ? "Administrador" : "Funcionário"}</div>

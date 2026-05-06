@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           atendimento: string | null
           call_date: string
+          canal: string
           created_at: string
           id: string
           numero: string
@@ -27,6 +28,7 @@ export type Database = {
         Insert: {
           atendimento?: string | null
           call_date?: string
+          canal?: string
           created_at?: string
           id?: string
           numero: string
@@ -36,11 +38,39 @@ export type Database = {
         Update: {
           atendimento?: string | null
           call_date?: string
+          canal?: string
           created_at?: string
           id?: string
           numero?: string
           ticket?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      notes: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string
+          id: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          created_by: string
+          id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          updated_at?: string
+          updated_by?: string | null
         }
         Relationships: []
       }

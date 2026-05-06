@@ -17,7 +17,7 @@ export const Route = createFileRoute("/relatorio")({
 });
 
 interface Profile { id: string; full_name: string }
-interface Call { id: string; user_id: string; call_date: string; ticket: string | null; numero: string; atendimento: string | null }
+interface Call { id: string; user_id: string; call_date: string; ticket: string | null; numero: string; atendimento: string | null; canal: string | null }
 
 function RelatorioPage() {
   const { user, loading } = useAuth();
@@ -26,21 +26,23 @@ function RelatorioPage() {
   const [from, setFrom] = useState(today);
   const [to, setTo] = useState(today);
   const [employee, setEmployee] = useState<string>("all");
+  const [canal, setCanal] = useState<string>("all");
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [calls, setCalls] = useState<Call[]>([]);
 
   useEffect(() => { if (!loading && !user) nav({ to: "/auth" }); }, [loading, user, nav]);
   useEffect(() => { void loadProfiles(); }, []);
-  useEffect(() => { void run(); }, [from, to, employee]);
+  useEffect(() => { void run(); }, [from, to, employee, canal]);
 
   async function loadProfiles() {
     const { data } = await supabase.from("profiles").select("id,full_name").order("full_name");
     setProfiles(data ?? []);
   }
   async function run() {
-    let q = supabase.from("calls").select("id,user_id,call_date,ticket,numero,atendimento")
+    let q = supabase.from("calls").select("id,user_id,call_date,ticket,numero,atendimento,canal")
       .gte("call_date", from).lte("call_date", to).order("call_date").order("created_at");
     if (employee !== "all") q = q.eq("user_id", employee);
+    if (canal !== "all") q = q.eq("canal", canal);
     const { data, error } = await q;
     if (error) toast.error(error.message); else setCalls(data ?? []);
   }
@@ -75,7 +77,7 @@ function RelatorioPage() {
         </div>
 
         <Card className="p-4 print:hidden">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <div className="space-y-1.5">
               <Label className="text-xs">Funcionário</Label>
               <Select value={employee} onValueChange={setEmployee}>
@@ -83,6 +85,17 @@ function RelatorioPage() {
                 <SelectContent>
                   <SelectItem value="all">Todos</SelectItem>
                   {profiles.map((p) => <SelectItem key={p.id} value={p.id}>{p.full_name}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Canal</Label>
+              <Select value={canal} onValueChange={setCanal}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="Fone">Fone</SelectItem>
+                  <SelectItem value="Chat">Chat</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -125,17 +138,18 @@ function RelatorioPage() {
           </Card>
 
           <Card className="lg:col-span-2 overflow-hidden">
-            <div className="grid grid-cols-[110px_1fr_1.5fr_1fr] bg-muted/60 text-xs font-medium uppercase tracking-wide text-muted-foreground px-4 py-2">
-              <div>Data</div><div>Funcionário</div><div>Número</div><div>Atendimento</div>
+            <div className="grid grid-cols-[100px_1fr_1.3fr_1fr_70px] bg-muted/60 text-xs font-medium uppercase tracking-wide text-muted-foreground px-4 py-2">
+              <div>Data</div><div>Funcionário</div><div>Número</div><div>Atendimento</div><div>Canal</div>
             </div>
             {calls.length === 0 ? (
               <div className="p-10 text-center text-sm text-muted-foreground">Sem registros para o filtro.</div>
             ) : calls.map((c) => (
-              <div key={c.id} className="grid grid-cols-[110px_1fr_1.5fr_1fr] px-4 py-2 border-t text-sm">
+              <div key={c.id} className="grid grid-cols-[100px_1fr_1.3fr_1fr_70px] px-4 py-2 border-t text-sm">
                 <div className="tabular-nums">{fmt(c.call_date)}</div>
                 <div>{nameOf(c.user_id)}</div>
                 <div className="font-mono">{c.numero}</div>
                 <div className="text-muted-foreground">{c.atendimento || "—"}</div>
+                <div>{c.canal || "—"}</div>
               </div>
             ))}
             <div className="px-4 py-2 border-t bg-muted/40 text-sm font-semibold">
