@@ -17,7 +17,7 @@ export const Route = createFileRoute("/relatorio")({
 });
 
 interface Profile { id: string; full_name: string }
-interface Call { id: string; user_id: string; call_date: string; ticket: string | null; numero: string; atendimento: string | null }
+interface Call { id: string; user_id: string; call_date: string; ticket: string | null; numero: string; atendimento: string | null; canal: string | null }
 
 function RelatorioPage() {
   const { user, loading } = useAuth();
