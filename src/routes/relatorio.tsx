@@ -138,17 +138,18 @@ function RelatorioPage() {
           </Card>
 
           <Card className="lg:col-span-2 overflow-hidden">
-            <div className="grid grid-cols-[110px_1fr_1.5fr_1fr] bg-muted/60 text-xs font-medium uppercase tracking-wide text-muted-foreground px-4 py-2">
-              <div>Data</div><div>Funcionário</div><div>Número</div><div>Atendimento</div>
+            <div className="grid grid-cols-[100px_1fr_1.3fr_1fr_70px] bg-muted/60 text-xs font-medium uppercase tracking-wide text-muted-foreground px-4 py-2">
+              <div>Data</div><div>Funcionário</div><div>Número</div><div>Atendimento</div><div>Canal</div>
             </div>
             {calls.length === 0 ? (
               <div className="p-10 text-center text-sm text-muted-foreground">Sem registros para o filtro.</div>
             ) : calls.map((c) => (
-              <div key={c.id} className="grid grid-cols-[110px_1fr_1.5fr_1fr] px-4 py-2 border-t text-sm">
+              <div key={c.id} className="grid grid-cols-[100px_1fr_1.3fr_1fr_70px] px-4 py-2 border-t text-sm">
                 <div className="tabular-nums">{fmt(c.call_date)}</div>
                 <div>{nameOf(c.user_id)}</div>
                 <div className="font-mono">{c.numero}</div>
                 <div className="text-muted-foreground">{c.atendimento || "—"}</div>
+                <div>{c.canal || "—"}</div>
               </div>
             ))}
             <div className="px-4 py-2 border-t bg-muted/40 text-sm font-semibold">
