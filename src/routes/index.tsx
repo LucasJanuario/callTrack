@@ -153,12 +153,12 @@ function IndexPage() {
 
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="numero" className="text-xs">Número *</Label>
-              <Input id="numero" className="h-10" required value={numero} onChange={(e) => setNumero(e.target.value)} placeholder="ex: 30534-83996952205" />
+              <Input id="numero" className="h-10" required value={numero} onChange={(e) => setNumero(e.target.value)} placeholder="ex: 3088-99567070" />
             </div>
 
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="atendimento" className="text-xs">Atendimento</Label>
-              <Input id="atendimento" className="h-10" value={atendimento} onChange={(e) => setAtendimento(e.target.value)} placeholder="ex: encaminhado para s2" />
+              <Input id="atendimento" className="h-10" value={atendimento} onChange={(e) => setAtendimento(e.target.value)} placeholder="ex: Devolução para fornecedor" />
             </div>
 
             <div className="flex flex-col gap-1.5">
