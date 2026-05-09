@@ -115,6 +115,15 @@ function IndexPage() {
     void load();
   }
 
+  async function toggleChecked(id: string, value: boolean) {
+    setCalls((prev) => prev.map((c) => (c.id === id ? { ...c, checked: value } : c)));
+    const { error } = await supabase.from("calls").update({ checked: value }).eq("id", id);
+    if (error) {
+      toast.error(error.message);
+      void load();
+    }
+  }
+
   if (loading || !user) return null;
 
   return (
