@@ -57,7 +57,7 @@ function IndexPage() {
     if (!user) return;
     const { data, error } = await supabase
       .from("calls")
-      .select("id,ticket,numero,atendimento,canal,call_date,created_at")
+      .select("id,ticket,numero,atendimento,canal,call_date,created_at,checked")
       .eq("user_id", user.id)
       .eq("call_date", date)
       .order("created_at", { ascending: true });
