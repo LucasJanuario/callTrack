@@ -24,6 +24,7 @@ interface Call {
   canal: string | null;
   call_date: string;
   created_at: string;
+  checked: boolean;
 }
 
 function IndexPage() {
