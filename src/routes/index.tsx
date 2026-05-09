@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Trash2, Plus, Phone, Pencil, Check, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -23,6 +24,7 @@ interface Call {
   canal: string | null;
   call_date: string;
   created_at: string;
+  checked: boolean;
 }
 
 function IndexPage() {
@@ -55,7 +57,7 @@ function IndexPage() {
     if (!user) return;
     const { data, error } = await supabase
       .from("calls")
-      .select("id,ticket,numero,atendimento,canal,call_date,created_at")
+      .select("id,ticket,numero,atendimento,canal,call_date,created_at,checked")
       .eq("user_id", user.id)
       .eq("call_date", date)
       .order("created_at", { ascending: true });
@@ -111,6 +113,15 @@ function IndexPage() {
     toast.success("Atualizado");
     setEditId(null);
     void load();
+  }
+
+  async function toggleChecked(id: string, value: boolean) {
+    setCalls((prev) => prev.map((c) => (c.id === id ? { ...c, checked: value } : c)));
+    const { error } = await supabase.from("calls").update({ checked: value }).eq("id", id);
+    if (error) {
+      toast.error(error.message);
+      void load();
+    }
   }
 
   if (loading || !user) return null;
@@ -181,13 +192,16 @@ function IndexPage() {
         </Card>
 
         <Card className="overflow-hidden shadow-[var(--shadow-soft)]">
-          <div className="grid grid-cols-[60px_120px_1fr_1fr_90px_96px] bg-muted/60 text-xs font-medium uppercase tracking-wide text-muted-foreground px-4 py-2">
-            <div>#</div><div>Ticket</div><div>Número</div><div>Atendimento</div><div>Canal</div><div></div>
+          <div className="grid grid-cols-[44px_60px_120px_1fr_1fr_90px_96px] bg-muted/60 text-xs font-medium uppercase tracking-wide text-muted-foreground px-4 py-2">
+            <div></div><div>#</div><div>Ticket</div><div>Número</div><div>Atendimento</div><div>Canal</div><div></div>
           </div>
           {calls.length === 0 ? (
             <div className="p-10 text-center text-sm text-muted-foreground">Nenhuma ligação registrada nesta data.</div>
           ) : calls.map((c, i) => (
-            <div key={c.id} className="grid grid-cols-[60px_120px_1fr_1fr_90px_96px] items-center px-4 py-2.5 border-t text-sm">
+            <div key={c.id} className="grid grid-cols-[44px_60px_120px_1fr_1fr_90px_96px] items-center px-4 py-2.5 border-t text-sm">
+              <div>
+                <Checkbox checked={c.checked} onCheckedChange={(v) => toggleChecked(c.id, v === true)} />
+              </div>
               <div className="text-muted-foreground">{i + 1}</div>
               {editId === c.id ? (
                 <>

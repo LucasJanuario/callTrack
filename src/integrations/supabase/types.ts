@@ -19,6 +19,7 @@ export type Database = {
           atendimento: string | null
           call_date: string
           canal: string
+          checked: boolean
           created_at: string
           id: string
           numero: string
@@ -29,6 +30,7 @@ export type Database = {
           atendimento?: string | null
           call_date?: string
           canal?: string
+          checked?: boolean
           created_at?: string
           id?: string
           numero: string
@@ -39,6 +41,7 @@ export type Database = {
           atendimento?: string | null
           call_date?: string
           canal?: string
+          checked?: boolean
           created_at?: string
           id?: string
           numero?: string
