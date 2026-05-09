@@ -192,13 +192,16 @@ function IndexPage() {
         </Card>
 
         <Card className="overflow-hidden shadow-[var(--shadow-soft)]">
-          <div className="grid grid-cols-[60px_120px_1fr_1fr_90px_96px] bg-muted/60 text-xs font-medium uppercase tracking-wide text-muted-foreground px-4 py-2">
-            <div>#</div><div>Ticket</div><div>Número</div><div>Atendimento</div><div>Canal</div><div></div>
+          <div className="grid grid-cols-[44px_60px_120px_1fr_1fr_90px_96px] bg-muted/60 text-xs font-medium uppercase tracking-wide text-muted-foreground px-4 py-2">
+            <div></div><div>#</div><div>Ticket</div><div>Número</div><div>Atendimento</div><div>Canal</div><div></div>
           </div>
           {calls.length === 0 ? (
             <div className="p-10 text-center text-sm text-muted-foreground">Nenhuma ligação registrada nesta data.</div>
           ) : calls.map((c, i) => (
-            <div key={c.id} className="grid grid-cols-[60px_120px_1fr_1fr_90px_96px] items-center px-4 py-2.5 border-t text-sm">
+            <div key={c.id} className="grid grid-cols-[44px_60px_120px_1fr_1fr_90px_96px] items-center px-4 py-2.5 border-t text-sm">
+              <div>
+                <Checkbox checked={c.checked} onCheckedChange={(v) => toggleChecked(c.id, v === true)} />
+              </div>
               <div className="text-muted-foreground">{i + 1}</div>
               {editId === c.id ? (
                 <>
