@@ -69,13 +69,15 @@ function IndexPage() {
     e.preventDefault();
     if (!user || !numero.trim()) return;
     setBusy(true);
+    const ticketTrim = ticket.trim();
     const { error } = await supabase.from("calls").insert({
       user_id: user.id,
       call_date: date,
-      ticket: ticket.trim() || null,
+      ticket: ticketTrim || null,
       numero: numero.trim(),
       atendimento: atendimento.trim() || null,
       canal: canal,
+      checked: ticketTrim.length > 0,
     });
     setBusy(false);
     if (error) return toast.error(error.message);
