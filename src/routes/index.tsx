@@ -107,13 +107,13 @@ function IndexPage() {
     if (!editNumero.trim()) return toast.error("Número é obrigatório");
     const ticketTrim = editTicket.trim();
     const current = calls.find((c) => c.id === id);
-    const update: Record<string, unknown> = {
+    const update = {
       ticket: ticketTrim || null,
       numero: editNumero.trim(),
       atendimento: editAtendimento.trim() || null,
       canal: editCanal,
+      checked: ticketTrim.length > 0 ? true : (current?.checked ?? false),
     };
-    if (ticketTrim.length > 0 && current && !current.checked) update.checked = true;
     const { error } = await supabase.from("calls").update(update).eq("id", id);
     if (error) return toast.error(error.message);
     toast.success("Atualizado");
