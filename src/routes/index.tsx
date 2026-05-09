@@ -69,13 +69,15 @@ function IndexPage() {
     e.preventDefault();
     if (!user || !numero.trim()) return;
     setBusy(true);
+    const ticketTrim = ticket.trim();
     const { error } = await supabase.from("calls").insert({
       user_id: user.id,
       call_date: date,
-      ticket: ticket.trim() || null,
+      ticket: ticketTrim || null,
       numero: numero.trim(),
       atendimento: atendimento.trim() || null,
       canal: canal,
+      checked: ticketTrim.length > 0,
     });
     setBusy(false);
     if (error) return toast.error(error.message);
@@ -103,12 +105,16 @@ function IndexPage() {
 
   async function saveEdit(id: string) {
     if (!editNumero.trim()) return toast.error("Número é obrigatório");
-    const { error } = await supabase.from("calls").update({
-      ticket: editTicket.trim() || null,
+    const ticketTrim = editTicket.trim();
+    const current = calls.find((c) => c.id === id);
+    const update = {
+      ticket: ticketTrim || null,
       numero: editNumero.trim(),
       atendimento: editAtendimento.trim() || null,
       canal: editCanal,
-    }).eq("id", id);
+      checked: ticketTrim.length > 0 ? true : (current?.checked ?? false),
+    };
+    const { error } = await supabase.from("calls").update(update).eq("id", id);
     if (error) return toast.error(error.message);
     toast.success("Atualizado");
     setEditId(null);
