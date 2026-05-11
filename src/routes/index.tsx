@@ -37,6 +37,7 @@ function IndexPage() {
   const [atendimento, setAtendimento] = useState("");
   const [canal, setCanal] = useState("Fone");
   const [busy, setBusy] = useState(false);
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
 
   const [editId, setEditId] = useState<string | null>(null);
   const [editTicket, setEditTicket] = useState("");
