@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Trash2, Plus, Phone, Pencil, Check, X } from "lucide-react";
+import { Trash2, Plus, Phone, Pencil, Check, X, ArrowUp, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
@@ -37,6 +37,7 @@ function IndexPage() {
   const [atendimento, setAtendimento] = useState("");
   const [canal, setCanal] = useState("Fone");
   const [busy, setBusy] = useState(false);
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
 
   const [editId, setEditId] = useState<string | null>(null);
   const [editTicket, setEditTicket] = useState("");
@@ -51,7 +52,7 @@ function IndexPage() {
   useEffect(() => {
     if (!user) return;
     void load();
-  }, [user, date]);
+  }, [user, date, sortDir]);
 
   async function load() {
     if (!user) return;
@@ -60,7 +61,7 @@ function IndexPage() {
       .select("id,ticket,numero,atendimento,canal,call_date,created_at,checked")
       .eq("user_id", user.id)
       .eq("call_date", date)
-      .order("created_at", { ascending: true });
+      .order("created_at", { ascending: sortDir === "asc" });
     if (error) toast.error(error.message);
     else setCalls(data ?? []);
   }
@@ -199,7 +200,19 @@ function IndexPage() {
 
         <Card className="overflow-hidden shadow-[var(--shadow-soft)]">
           <div className="grid grid-cols-[44px_60px_120px_1fr_1fr_90px_96px] bg-muted/60 text-xs font-medium uppercase tracking-wide text-muted-foreground px-4 py-2">
-            <div></div><div>#</div><div>Ticket</div><div>Número</div><div>Atendimento</div><div>Canal</div><div></div>
+            <div></div>
+            <div>
+              <button
+                type="button"
+                onClick={() => setSortDir((d) => (d === "asc" ? "desc" : "asc"))}
+                className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
+                title={sortDir === "asc" ? "Ordenar do mais recente" : "Ordenar do mais antigo"}
+              >
+                #
+                {sortDir === "asc" ? <ArrowUp className="size-3" /> : <ArrowDown className="size-3" />}
+              </button>
+            </div>
+            <div>Ticket</div><div>Número</div><div>Atendimento</div><div>Canal</div><div></div>
           </div>
           {calls.length === 0 ? (
             <div className="p-10 text-center text-sm text-muted-foreground">Nenhuma ligação registrada nesta data.</div>
