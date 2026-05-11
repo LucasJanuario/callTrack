@@ -52,7 +52,7 @@ function IndexPage() {
   useEffect(() => {
     if (!user) return;
     void load();
-  }, [user, date]);
+  }, [user, date, sortDir]);
 
   async function load() {
     if (!user) return;
