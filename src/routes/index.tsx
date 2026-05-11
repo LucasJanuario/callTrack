@@ -61,7 +61,7 @@ function IndexPage() {
       .select("id,ticket,numero,atendimento,canal,call_date,created_at,checked")
       .eq("user_id", user.id)
       .eq("call_date", date)
-      .order("created_at", { ascending: true });
+      .order("created_at", { ascending: sortDir === "asc" });
     if (error) toast.error(error.message);
     else setCalls(data ?? []);
   }
