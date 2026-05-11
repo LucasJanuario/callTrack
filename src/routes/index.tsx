@@ -200,7 +200,19 @@ function IndexPage() {
 
         <Card className="overflow-hidden shadow-[var(--shadow-soft)]">
           <div className="grid grid-cols-[44px_60px_120px_1fr_1fr_90px_96px] bg-muted/60 text-xs font-medium uppercase tracking-wide text-muted-foreground px-4 py-2">
-            <div></div><div>#</div><div>Ticket</div><div>Número</div><div>Atendimento</div><div>Canal</div><div></div>
+            <div></div>
+            <div>
+              <button
+                type="button"
+                onClick={() => setSortDir((d) => (d === "asc" ? "desc" : "asc"))}
+                className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
+                title={sortDir === "asc" ? "Ordenar do mais recente" : "Ordenar do mais antigo"}
+              >
+                #
+                {sortDir === "asc" ? <ArrowUp className="size-3" /> : <ArrowDown className="size-3" />}
+              </button>
+            </div>
+            <div>Ticket</div><div>Número</div><div>Atendimento</div><div>Canal</div><div></div>
           </div>
           {calls.length === 0 ? (
             <div className="p-10 text-center text-sm text-muted-foreground">Nenhuma ligação registrada nesta data.</div>
