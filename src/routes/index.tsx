@@ -55,6 +55,9 @@ function IndexPage() {
   const [editAtendimento, setEditAtendimento] = useState("");
   const [editCanal, setEditCanal] = useState("Fone");
 
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
   useEffect(() => {
     if (!loading && !user) nav({ to: "/auth" });
   }, [loading, user, nav]);
