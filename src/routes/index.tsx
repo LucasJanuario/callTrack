@@ -9,6 +9,16 @@ import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Trash2, Plus, Phone, Pencil, Check, X, ArrowUp, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
 
@@ -44,6 +54,9 @@ function IndexPage() {
   const [editNumero, setEditNumero] = useState("");
   const [editAtendimento, setEditAtendimento] = useState("");
   const [editCanal, setEditCanal] = useState("Fone");
+
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) nav({ to: "/auth" });
@@ -86,10 +99,18 @@ function IndexPage() {
     void load();
   }
 
-  async function remove(id: string) {
-    const { error } = await supabase.from("calls").delete().eq("id", id);
+  async function confirmDelete() {
+    if (!deleteId) return;
+    const { error } = await supabase.from("calls").delete().eq("id", deleteId);
+    setDeleteOpen(false);
+    setDeleteId(null);
     if (error) return toast.error(error.message);
     void load();
+  }
+
+  function askDelete(id: string) {
+    setDeleteId(id);
+    setDeleteOpen(true);
   }
 
   function startEdit(c: Call) {
@@ -253,7 +274,7 @@ function IndexPage() {
                     <Button variant="ghost" size="icon" onClick={() => startEdit(c)}>
                       <Pencil className="size-4 text-muted-foreground" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => remove(c.id)}>
+                    <Button variant="ghost" size="icon" onClick={() => askDelete(c.id)}>
                       <Trash2 className="size-4 text-destructive" />
                     </Button>
                   </div>
@@ -262,6 +283,23 @@ function IndexPage() {
             </div>
           ))}
         </Card>
+
+        <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+              <AlertDialogDescription>
+                Tem certeza que deseja excluir este atendimento? Esta ação não pode ser desfeita.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setDeleteId(null)}>Cancelar</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                Excluir
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </main>
     </div>
   );
