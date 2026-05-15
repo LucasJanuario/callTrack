@@ -99,10 +99,18 @@ function IndexPage() {
     void load();
   }
 
-  async function remove(id: string) {
-    const { error } = await supabase.from("calls").delete().eq("id", id);
+  async function confirmDelete() {
+    if (!deleteId) return;
+    const { error } = await supabase.from("calls").delete().eq("id", deleteId);
+    setDeleteOpen(false);
+    setDeleteId(null);
     if (error) return toast.error(error.message);
     void load();
+  }
+
+  function askDelete(id: string) {
+    setDeleteId(id);
+    setDeleteOpen(true);
   }
 
   function startEdit(c: Call) {
