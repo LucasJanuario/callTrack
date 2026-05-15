@@ -274,7 +274,7 @@ function IndexPage() {
                     <Button variant="ghost" size="icon" onClick={() => startEdit(c)}>
                       <Pencil className="size-4 text-muted-foreground" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => remove(c.id)}>
+                    <Button variant="ghost" size="icon" onClick={() => askDelete(c.id)}>
                       <Trash2 className="size-4 text-destructive" />
                     </Button>
                   </div>
