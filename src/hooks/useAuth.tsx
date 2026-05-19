@@ -24,19 +24,59 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+    const todayStr = () => new Date().toISOString().slice(0, 10);
+
+    const checkDailyExpiry = async (s: Session | null) => {
+      if (!s?.user) return false;
+      const storedDay = localStorage.getItem("auth_login_day");
+      if (storedDay && storedDay !== todayStr()) {
+        await supabase.auth.signOut();
+        localStorage.removeItem("auth_login_day");
+        return true;
+      }
+      if (!storedDay) localStorage.setItem("auth_login_day", todayStr());
+      return false;
+    };
+
+    const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
       setSession(s);
       setUser(s?.user ?? null);
+      if (event === "SIGNED_IN" && s?.user) {
+        localStorage.setItem("auth_login_day", todayStr());
+      }
+      if (event === "SIGNED_OUT") {
+        localStorage.removeItem("auth_login_day");
+      }
       if (s?.user) setTimeout(() => loadProfile(s.user.id), 0);
       else { setRole(null); setFullName(null); }
     });
-    supabase.auth.getSession().then(({ data }) => {
+    supabase.auth.getSession().then(async ({ data }) => {
+      const expired = await checkDailyExpiry(data.session);
+      if (expired) {
+        setSession(null);
+        setUser(null);
+        setLoading(false);
+        return;
+      }
       setSession(data.session);
       setUser(data.session?.user ?? null);
       if (data.session?.user) loadProfile(data.session.user.id).finally(() => setLoading(false));
       else setLoading(false);
     });
-    return () => sub.subscription.unsubscribe();
+
+    // Verifica também quando a aba volta a ficar visível (usuário chega de manhã)
+    const onVisibility = async () => {
+      if (document.visibilityState === "visible") {
+        const { data } = await supabase.auth.getSession();
+        await checkDailyExpiry(data.session);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      sub.subscription.unsubscribe();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, []);
 
   async function loadProfile(uid: string) {
