@@ -24,17 +24,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const todayStr = () => new Date().toISOString().slice(0, 10);
+    const LOGIN_DAY_KEY = "auth_login_day";
+    const LOGIN_AT_KEY = "auth_login_at";
+    const MAX_SESSION_MS = 12 * 60 * 60 * 1000;
+    const todayStr = () => {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+    const storeLoginMoment = () => {
+      localStorage.setItem(LOGIN_DAY_KEY, todayStr());
+      localStorage.setItem(LOGIN_AT_KEY, String(Date.now()));
+    };
+    const clearLoginMoment = () => {
+      localStorage.removeItem(LOGIN_DAY_KEY);
+      localStorage.removeItem(LOGIN_AT_KEY);
+    };
 
-    const checkDailyExpiry = async (s: Session | null) => {
+    const checkSessionExpiry = async (s: Session | null) => {
       if (!s?.user) return false;
-      const storedDay = localStorage.getItem("auth_login_day");
-      if (storedDay && storedDay !== todayStr()) {
+      const storedDay = localStorage.getItem(LOGIN_DAY_KEY);
+      const storedAt = Number(localStorage.getItem(LOGIN_AT_KEY));
+      const expiredByDay = Boolean(storedDay && storedDay !== todayStr());
+      const expiredByAge = Boolean(storedAt && Date.now() - storedAt >= MAX_SESSION_MS);
+      if (expiredByDay || expiredByAge) {
         await supabase.auth.signOut();
-        localStorage.removeItem("auth_login_day");
+        clearLoginMoment();
         return true;
       }
-      if (!storedDay) localStorage.setItem("auth_login_day", todayStr());
+      if (!storedDay || !storedAt) storeLoginMoment();
       return false;
     };
 
@@ -42,16 +62,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(s);
       setUser(s?.user ?? null);
       if (event === "SIGNED_IN" && s?.user) {
-        localStorage.setItem("auth_login_day", todayStr());
+        storeLoginMoment();
       }
       if (event === "SIGNED_OUT") {
-        localStorage.removeItem("auth_login_day");
+        clearLoginMoment();
       }
       if (s?.user) setTimeout(() => loadProfile(s.user.id), 0);
       else { setRole(null); setFullName(null); }
     });
     supabase.auth.getSession().then(async ({ data }) => {
-      const expired = await checkDailyExpiry(data.session);
+      const expired = await checkSessionExpiry(data.session);
       if (expired) {
         setSession(null);
         setUser(null);
@@ -68,7 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const onVisibility = async () => {
       if (document.visibilityState === "visible") {
         const { data } = await supabase.auth.getSession();
-        await checkDailyExpiry(data.session);
+        await checkSessionExpiry(data.session);
       }
     };
     document.addEventListener("visibilitychange", onVisibility);
