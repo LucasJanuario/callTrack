@@ -68,7 +68,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         clearLoginMoment();
       }
       if (s?.user) setTimeout(() => loadProfile(s.user.id), 0);
-      else { setRole(null); setFullName(null); }
+      else {
+        setRole(null);
+        setFullName(null);
+      }
     });
     supabase.auth.getSession().then(async ({ data }) => {
       const expired = await checkSessionExpiry(data.session);
