@@ -21,6 +21,17 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Trash2, Plus, Phone, Pencil, Check, X, ArrowUp, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
+import simpsonsAsset from "@/assets/simpsons.png.asset.json";
+import rockAsset from "@/assets/rock.png.asset.json";
+import ruivoAsset from "@/assets/ruivo.png.asset.json";
+import shrekAsset from "@/assets/shrek.png.asset.json";
+
+function getMoodImage(count: number): { url: string; alt: string } {
+  if (count >= 15) return { url: shrekAsset.url, alt: "Shrek" };
+  if (count >= 10) return { url: ruivoAsset.url, alt: "Ruivo" };
+  if (count >= 5) return { url: rockAsset.url, alt: "The Rock" };
+  return { url: simpsonsAsset.url, alt: "Simpsons" };
+}
 
 export const Route = createFileRoute("/")({
   component: IndexPage,
