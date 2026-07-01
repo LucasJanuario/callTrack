@@ -19,7 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Trash2, Plus, Phone, Pencil, Check, X, ArrowUp, ArrowDown } from "lucide-react";
+import { Trash2, Plus, Pencil, Check, X, ArrowUp, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
 import simpsonsAsset from "@/assets/simpsons.png.asset.json";
 import rockAsset from "@/assets/rock.png.asset.json";
