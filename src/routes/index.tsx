@@ -202,8 +202,12 @@ function IndexPage() {
         <Card className="p-4 shadow-[var(--shadow-soft)]">
           <form
             onSubmit={add}
-            className="grid grid-cols-1 md:grid-cols-[140px_1fr_1fr_130px_auto] gap-3 items-end"
+            className="grid grid-cols-1 md:grid-cols-[150px_140px_1fr_1fr_130px_auto] gap-3 items-end"
           >
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="date" className="text-xs">Data</Label>
+              <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="h-10" />
+            </div>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="ticket" className="text-xs">Ticket</Label>
               <Input id="ticket" className="h-10" value={ticket} onChange={(e) => setTicket(e.target.value)} placeholder="opcional" />
