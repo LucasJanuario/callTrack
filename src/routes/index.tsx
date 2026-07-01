@@ -188,11 +188,12 @@ function IndexPage() {
                 </Card>
               );
             })()}
-            <Card className="px-6 py-3 flex flex-col items-center justify-center gap-1 shadow-[var(--shadow-soft)] min-w-[140px] h-[112px]">
+            <Card className="px-6 py-3 flex flex-col items-center justify-center gap-1 shadow-[var(--shadow-soft)] min-w-[160px]">
               <div className="text-xs text-muted-foreground">Total no dia</div>
               <div className="text-3xl font-bold leading-none">{calls.length}</div>
-              <div className="text-sm text-muted-foreground">
-                {new Date(date + "T00:00:00").toLocaleDateString("pt-BR")}
+              <div className="flex flex-col items-center gap-0.5 w-full">
+                <Label htmlFor="date" className="text-[10px] text-muted-foreground">Data</Label>
+                <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="h-7 text-xs text-center px-1" />
               </div>
             </Card>
           </div>
