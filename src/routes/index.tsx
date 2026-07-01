@@ -170,11 +170,11 @@ function IndexPage() {
       <AppHeader />
       <main className="max-w-6xl mx-auto px-4 py-6 space-y-6">
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold">Minhas ligações</h1>
-            <p className="text-sm text-muted-foreground">Registre as ligações atendidas no dia.</p>
-          </div>
-          <div className="flex items-end gap-3">
+          <div className="flex flex-wrap items-end gap-6">
+            <div>
+              <h1 className="text-2xl font-bold">Minhas ligações</h1>
+              <p className="text-sm text-muted-foreground">Registre as ligações atendidas no dia.</p>
+            </div>
             <div>
               <Label htmlFor="date" className="text-xs">Data</Label>
               <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-44" />
@@ -189,7 +189,20 @@ function IndexPage() {
               </div>
             </Card>
           </div>
+          {(() => {
+            const mood = getMoodImage(calls.length);
+            return (
+              <Card className="p-2 shadow-[var(--shadow-soft)]">
+                <img
+                  src={mood.url}
+                  alt={mood.alt}
+                  className="size-24 object-cover rounded-md"
+                />
+              </Card>
+            );
+          })()}
         </div>
+
 
         <Card className="p-4 shadow-[var(--shadow-soft)]">
           <form
