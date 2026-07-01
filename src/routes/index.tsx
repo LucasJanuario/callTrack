@@ -19,7 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Trash2, Plus, Phone, Pencil, Check, X, ArrowUp, ArrowDown } from "lucide-react";
+import { Trash2, Plus, Pencil, Check, X, ArrowUp, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
 import simpsonsAsset from "@/assets/simpsons.png.asset.json";
 import rockAsset from "@/assets/rock.png.asset.json";
@@ -169,46 +169,45 @@ function IndexPage() {
     <div className="min-h-screen bg-background">
       <AppHeader />
       <main className="max-w-6xl mx-auto px-4 py-6 space-y-6">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div className="flex flex-wrap items-end gap-6">
-            <div>
-              <h1 className="text-2xl font-bold">Minhas ligações</h1>
-              <p className="text-sm text-muted-foreground">Registre as ligações atendidas no dia.</p>
-            </div>
-            <div>
-              <Label htmlFor="date" className="text-xs">Data</Label>
-              <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-44" />
-            </div>
-            <Card className="px-4 py-2 flex items-center gap-3 shadow-[var(--shadow-soft)]">
-              <div className="size-9 rounded-md grid place-items-center text-primary-foreground" style={{ background: "var(--gradient-brand)" }}>
-                <Phone className="size-4" />
-              </div>
-              <div>
-                <div className="text-xs text-muted-foreground">Total no dia</div>
-                <div className="text-2xl font-bold leading-none">{calls.length}</div>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold">Minhas ligações</h1>
+            <p className="text-sm text-muted-foreground">Registre as ligações atendidas no dia.</p>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {(() => {
+              const mood = getMoodImage(calls.length);
+              return (
+                <Card className="p-2 shadow-[var(--shadow-soft)]">
+                  <img
+                    src={mood.url}
+                    alt={mood.alt}
+                    className="size-24 object-cover rounded-md"
+                  />
+                </Card>
+              );
+            })()}
+            <Card className="px-6 py-3 flex flex-col items-center justify-center gap-1 shadow-[var(--shadow-soft)] min-w-[140px] h-[112px]">
+              <div className="text-xs text-muted-foreground">Total no dia</div>
+              <div className="text-3xl font-bold leading-none">{calls.length}</div>
+              <div className="text-sm text-muted-foreground">
+                {new Date(date + "T00:00:00").toLocaleDateString("pt-BR")}
               </div>
             </Card>
           </div>
-          {(() => {
-            const mood = getMoodImage(calls.length);
-            return (
-              <Card className="p-2 shadow-[var(--shadow-soft)]">
-                <img
-                  src={mood.url}
-                  alt={mood.alt}
-                  className="size-24 object-cover rounded-md"
-                />
-              </Card>
-            );
-          })()}
         </div>
 
 
         <Card className="p-4 shadow-[var(--shadow-soft)]">
           <form
             onSubmit={add}
-            className="grid grid-cols-1 md:grid-cols-[140px_1fr_1fr_130px_auto] gap-3 items-end"
+            className="grid grid-cols-1 md:grid-cols-[150px_140px_1fr_1fr_130px_auto] gap-3 items-end"
           >
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="date" className="text-xs">Data</Label>
+              <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="h-10" />
+            </div>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="ticket" className="text-xs">Ticket</Label>
               <Input id="ticket" className="h-10" value={ticket} onChange={(e) => setTicket(e.target.value)} placeholder="opcional" />
