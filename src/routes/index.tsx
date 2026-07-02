@@ -167,7 +167,7 @@ function IndexPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <AppHeader />
+      <AppHeader date={date} onDateChange={setDate} />
       <main className="max-w-6xl mx-auto px-4 py-6 space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
