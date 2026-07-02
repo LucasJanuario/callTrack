@@ -39,6 +39,16 @@ export function AppHeader({ date, onDateChange }: AppHeaderProps) {
             <span className="inline-flex items-center gap-1.5"><StickyNote className="size-4" /> Anotações</span>
           </Link>
         </nav>
+        {onDateChange && (
+          <div className="hidden md:flex flex-col justify-center">
+            <Input
+              type="date"
+              value={date}
+              onChange={(e) => onDateChange(e.target.value)}
+              className="h-8 text-sm px-2"
+            />
+          </div>
+        )}
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" onClick={toggle} aria-label="Alternar tema">
             {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
