@@ -189,7 +189,7 @@ function IndexPage() {
               );
             })()}
             <Card className="px-6 py-3 flex flex-col items-center justify-center gap-2 shadow-[var(--shadow-soft)] min-w-[160px] h-[112px]">
-              <div className="text-sm text-muted-foreground font-medium">Total no dia</div>
+              <div className="text-base text-muted-foreground font-medium">Total no dia</div>
               <div className="text-4xl font-bold leading-none tracking-tight">{calls.length}</div>
             </Card>
           </div>
