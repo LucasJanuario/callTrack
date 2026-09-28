@@ -13,7 +13,14 @@ import { UserPlus } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   component: AdminPage,
-  head: () => ({ meta: [{ title: "Funcionários — CallTrack" }] }),
+  head: () => ({ meta: [
+    { title: "Funcionários — CallTrack" },
+    { name: "description", content: "Gerencie os funcionários com acesso ao CallTrack." },
+    { property: "og:title", content: "Funcionários — CallTrack" },
+    { property: "og:description", content: "Gerencie os funcionários com acesso ao CallTrack." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
 });
 
 interface Row { id: string; full_name: string; role: "admin" | "employee" }
@@ -73,7 +80,7 @@ function AdminPage() {
           <p className="text-sm text-muted-foreground">Cadastre e gerencie quem pode acessar o sistema.</p>
         </div>
 
-        <Card className="p-4">
+        <Card className="p-4 shadow-[var(--shadow-soft)]">
           <h3 className="font-semibold mb-3 flex items-center gap-2"><UserPlus className="size-4" /> Cadastrar funcionário</h3>
           <form onSubmit={add} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_180px_auto] gap-3 items-end">
             <div className="space-y-1.5">
@@ -88,11 +95,11 @@ function AdminPage() {
               <Label className="text-xs">Senha provisória</Label>
               <Input type="text" minLength={6} required value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
-            <Button type="submit" disabled={busy}>{busy ? "Criando..." : "Cadastrar"}</Button>
+            <Button type="submit" className="bg-coral text-coral-foreground hover:bg-coral/85" disabled={busy}>{busy ? "Criando..." : "Cadastrar"}</Button>
           </form>
         </Card>
 
-        <Card className="overflow-hidden">
+        <Card className="overflow-hidden shadow-[var(--shadow-soft)]">
           <div className="grid grid-cols-[1fr_120px] bg-muted/60 text-xs font-medium uppercase tracking-wide text-muted-foreground px-4 py-2">
             <div>Nome</div><div>Função</div>
           </div>

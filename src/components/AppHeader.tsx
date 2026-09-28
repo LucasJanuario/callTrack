@@ -15,37 +15,37 @@ export function AppHeader({ date, onDateChange }: AppHeaderProps) {
   const { theme, toggle } = useTheme();
   const nav = useNavigate();
   return (
-    <header className="border-b bg-card/80 backdrop-blur sticky top-0 z-40">
-      <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
-        <Link to="/" className="flex items-center gap-2 font-semibold">
-          <div className="size-8 rounded-md grid place-items-center text-primary-foreground" style={{ background: "var(--gradient-brand)" }}>
+    <header className="border-b bg-card sticky top-0 z-40 shadow-[var(--shadow-soft)]">
+      <div className="max-w-6xl mx-auto px-4 min-h-16 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 py-2">
+        <Link to="/" className="flex items-center gap-2 font-display font-bold text-lg shrink-0">
+          <div className="size-8 rounded-md grid place-items-center bg-brand-dark text-coral">
             <Phone className="size-4" />
           </div>
           <span>CallTrack</span>
         </Link>
-        <nav className="flex items-center gap-1">
-          <Link to="/" activeOptions={{ exact: true }} className="px-3 py-1.5 rounded-md text-sm hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
+        <nav className="order-3 w-full md:order-none md:w-auto flex items-center gap-1 overflow-x-auto whitespace-nowrap pb-1 md:pb-0">
+          <Link to="/" activeOptions={{ exact: true }} className="px-3 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
             <span className="inline-flex items-center gap-1.5"><Phone className="size-4" /> Ligações</span>
           </Link>
-          <Link to="/relatorio" className="px-3 py-1.5 rounded-md text-sm hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
+          <Link to="/relatorio" className="px-3 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
             <span className="inline-flex items-center gap-1.5"><FileBarChart2 className="size-4" /> Relatório</span>
           </Link>
           {role === "admin" && (
-            <Link to="/admin" className="px-3 py-1.5 rounded-md text-sm hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
+            <Link to="/admin" className="px-3 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
               <span className="inline-flex items-center gap-1.5"><Users className="size-4" /> Funcionários</span>
             </Link>
           )}
-          <Link to="/anotacoes" className="px-3 py-1.5 rounded-md text-sm hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
+          <Link to="/anotacoes" className="px-3 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
             <span className="inline-flex items-center gap-1.5"><StickyNote className="size-4" /> Anotações</span>
           </Link>
         </nav>
         {onDateChange && (
-          <div className="hidden md:flex flex-col justify-center">
+          <div className="hidden lg:flex flex-col justify-center">
             <Input
               type="date"
               value={date}
               onChange={(e) => onDateChange(e.target.value)}
-              className="h-8 text-sm px-2"
+              className="h-9 text-sm px-2 bg-muted border-0"
             />
           </div>
         )}
@@ -57,7 +57,7 @@ export function AppHeader({ date, onDateChange }: AppHeaderProps) {
             <div className="text-sm font-medium leading-tight">{fullName ?? "Usuário"}</div>
             <div className="text-xs text-muted-foreground capitalize">{role === "admin" ? "Administrador" : "Funcionário"}</div>
           </div>
-          <Button variant="outline" size="sm" onClick={async () => { await signOut(); nav({ to: "/auth" }); }}>
+          <Button variant="outline" size="icon" aria-label="Sair" title="Sair" onClick={async () => { await signOut(); nav({ to: "/auth" }); }}>
             <LogOut className="size-4" />
           </Button>
         </div>

@@ -35,6 +35,14 @@ function getMoodImage(count: number): { url: string; alt: string } {
 
 export const Route = createFileRoute("/")({
   component: IndexPage,
+  head: () => ({ meta: [
+    { title: "Minhas ligações — CallTrack" },
+    { name: "description", content: "Registre e acompanhe suas ligações atendidas por data no CallTrack." },
+    { property: "og:title", content: "Minhas ligações — CallTrack" },
+    { property: "og:description", content: "Registre e acompanhe suas ligações atendidas por data no CallTrack." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
 });
 
 interface Call {
@@ -169,17 +177,18 @@ function IndexPage() {
     <div className="min-h-screen bg-background">
       <AppHeader date={date} onDateChange={setDate} />
       <main className="max-w-6xl mx-auto px-4 py-6 space-y-6">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
+          <div className="min-w-0">
+            <p className="text-xs font-bold uppercase text-primary mb-1">Painel de atendimento</p>
             <h1 className="text-2xl font-bold">Minhas ligações</h1>
             <p className="text-sm text-muted-foreground">Registre as ligações atendidas no dia.</p>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-stretch gap-3 w-full sm:w-auto">
             {(() => {
               const mood = getMoodImage(calls.length);
               return (
-                <Card className="p-2 shadow-[var(--shadow-soft)]">
+                <Card className="p-2 shadow-[var(--shadow-soft)] shrink-0">
                   <img
                     src={mood.url}
                     alt={mood.alt}
@@ -188,35 +197,41 @@ function IndexPage() {
                 </Card>
               );
             })()}
-            <Card className="px-6 py-3 flex flex-col items-center justify-center gap-2 shadow-[var(--shadow-soft)] min-w-[160px] h-[112px]">
-              <div className="text-xl text-muted-foreground font-medium">Total no dia</div>
-              <div className="text-4xl font-bold leading-none tracking-tight">{calls.length}</div>
+            <Card className="px-5 py-3 flex-1 sm:flex-none flex flex-col items-center justify-center gap-1 shadow-[var(--shadow-soft)] min-w-0 sm:min-w-[180px] min-h-[112px]">
+              <div className="text-base sm:text-lg text-muted-foreground font-semibold text-center">Total no dia</div>
+              <div className="text-4xl font-display font-bold leading-none text-foreground tabular-nums">{calls.length}</div>
             </Card>
           </div>
         </div>
 
+        <div className="lg:hidden flex items-center gap-3">
+          <Label htmlFor="date-mobile" className="text-sm font-semibold shrink-0">Data</Label>
+          <Input id="date-mobile" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-auto max-w-full bg-card" />
+        </div>
 
+        <section>
+        <h2 className="text-sm font-bold text-muted-foreground uppercase mb-3">Novo registro</h2>
         <Card className="p-4 shadow-[var(--shadow-soft)]">
           <form
             onSubmit={add}
-            className="grid grid-cols-1 md:grid-cols-[140px_1fr_2fr_130px_auto] gap-3 items-end"
+            className="grid grid-cols-2 md:grid-cols-[140px_1fr_2fr_130px_auto] gap-3 items-end"
           >
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-1.5 min-w-0">
               <Label htmlFor="ticket" className="text-xs">Ticket</Label>
               <Input id="ticket" className="h-10" value={ticket} onChange={(e) => setTicket(e.target.value)} placeholder="opcional" />
             </div>
 
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-1.5 min-w-0">
               <Label htmlFor="numero" className="text-xs">Número *</Label>
               <Input id="numero" className="h-10" required value={numero} onChange={(e) => setNumero(e.target.value)} placeholder="ex: 3088-99567070" />
             </div>
 
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-1.5 col-span-2 md:col-span-1 min-w-0">
               <Label htmlFor="atendimento" className="text-xs">Atendimento</Label>
               <Input id="atendimento" className="h-10" value={atendimento} onChange={(e) => setAtendimento(e.target.value)} placeholder="ex: Devolução para fornecedor" />
             </div>
 
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-1.5 min-w-0">
               <Label htmlFor="canal" className="text-xs">Canal</Label>
               <Select value={canal} onValueChange={setCanal}>
                 <SelectTrigger id="canal" className="h-10 w-full">
@@ -229,41 +244,49 @@ function IndexPage() {
               </Select>
             </div>
 
-            <Button type="submit" disabled={busy} className="h-10">
+            <Button type="submit" disabled={busy} className="h-10 bg-coral text-coral-foreground hover:bg-coral/85 md:w-auto">
               <Plus className="size-4" /> Adicionar
             </Button>
           </form>
         </Card>
+        </section>
 
+        <section>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-bold text-muted-foreground uppercase">Ligações registradas</h2>
+          <Button type="button" variant="ghost" size="sm" className="md:hidden text-primary" onClick={() => setSortDir((d) => (d === "asc" ? "desc" : "asc"))}>
+            {sortDir === "asc" ? <ArrowUp className="size-4" /> : <ArrowDown className="size-4" />} Ordenar
+          </Button>
+        </div>
         <Card className="overflow-hidden shadow-[var(--shadow-soft)]">
-          <div className="grid grid-cols-[44px_60px_120px_1fr_1fr_90px_96px] bg-muted/60 text-xs font-medium uppercase tracking-wide text-muted-foreground px-4 py-2">
+          <div className="hidden md:grid grid-cols-[44px_60px_120px_1fr_1fr_90px_96px] bg-muted/60 text-xs font-medium uppercase text-muted-foreground px-4 py-3">
             <div></div>
             <div>
-              <button
+              <Button variant="ghost" size="sm"
                 type="button"
                 onClick={() => setSortDir((d) => (d === "asc" ? "desc" : "asc"))}
-                className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
+                className="h-auto p-0 inline-flex items-center gap-1 hover:text-foreground transition-colors"
                 title={sortDir === "asc" ? "Ordenar do mais recente" : "Ordenar do mais antigo"}
               >
                 #
                 {sortDir === "asc" ? <ArrowUp className="size-3" /> : <ArrowDown className="size-3" />}
-              </button>
+              </Button>
             </div>
             <div>Ticket</div><div>Número</div><div>Atendimento</div><div>Canal</div><div></div>
           </div>
           {calls.length === 0 ? (
             <div className="p-10 text-center text-sm text-muted-foreground">Nenhuma ligação registrada nesta data.</div>
           ) : calls.map((c, i) => (
-            <div key={c.id} className="grid grid-cols-[44px_60px_120px_1fr_1fr_90px_96px] items-center px-4 py-2.5 border-t text-sm">
-              <div>
-                <Checkbox checked={c.checked} onCheckedChange={(v) => toggleChecked(c.id, v === true)} />
+            <div key={c.id} className="grid grid-cols-[36px_1fr_auto] md:grid-cols-[44px_60px_120px_1fr_1fr_90px_96px] items-center gap-x-2 md:gap-x-0 px-4 py-3 border-t text-sm">
+              <div className="row-span-3 md:row-span-1 self-start md:self-center pt-1 md:pt-0">
+                <Checkbox aria-label={`Marcar ligação ${i + 1}`} checked={c.checked} onCheckedChange={(v) => toggleChecked(c.id, v === true)} />
               </div>
-              <div className="text-muted-foreground">{i + 1}</div>
+              <div className="hidden md:block text-muted-foreground">{i + 1}</div>
               {editId === c.id ? (
                 <>
-                  <Input value={editTicket} onChange={(e) => setEditTicket(e.target.value)} placeholder="opcional" className="h-7 text-sm" />
-                  <Input value={editNumero} onChange={(e) => setEditNumero(e.target.value)} required className="h-7 text-sm font-mono" />
-                  <Input value={editAtendimento} onChange={(e) => setEditAtendimento(e.target.value)} className="h-7 text-sm" />
+                  <Input aria-label="Editar ticket" value={editTicket} onChange={(e) => setEditTicket(e.target.value)} placeholder="Ticket" className="col-span-2 md:col-span-1 h-8 text-sm" />
+                  <Input aria-label="Editar número" value={editNumero} onChange={(e) => setEditNumero(e.target.value)} required className="col-span-2 md:col-span-1 h-8 text-sm font-mono" />
+                  <Input aria-label="Editar atendimento" value={editAtendimento} onChange={(e) => setEditAtendimento(e.target.value)} className="col-span-2 md:col-span-1 h-8 text-sm" />
                   <Select value={editCanal} onValueChange={setEditCanal}>
                     <SelectTrigger className="h-7 text-sm"><SelectValue /></SelectTrigger>
                     <SelectContent>
@@ -272,25 +295,25 @@ function IndexPage() {
                     </SelectContent>
                   </Select>
                   <div className="flex justify-end gap-1">
-                    <Button variant="ghost" size="icon" onClick={() => saveEdit(c.id)}>
-                      <Check className="size-4 text-green-600" />
+                    <Button variant="ghost" size="icon" aria-label="Salvar edição" onClick={() => saveEdit(c.id)}>
+                      <Check className="size-4 text-success" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={cancelEdit}>
+                    <Button variant="ghost" size="icon" aria-label="Cancelar edição" onClick={cancelEdit}>
                       <X className="size-4 text-muted-foreground" />
                     </Button>
                   </div>
                 </>
               ) : (
                 <>
-                  <div>{c.ticket || "—"}</div>
-                  <div className="font-mono">{c.numero}</div>
-                  <div className="text-muted-foreground">{c.atendimento || "—"}</div>
-                  <div>{c.canal || "—"}</div>
-                  <div className="flex justify-end gap-1">
-                    <Button variant="ghost" size="icon" onClick={() => startEdit(c)}>
+                  <div className="hidden md:block">{c.ticket || "—"}</div>
+                  <div className="font-semibold md:font-normal break-all md:break-normal">{c.numero}<span className="md:hidden text-xs text-muted-foreground font-normal ml-2">#{i + 1}{c.ticket ? ` · Ticket ${c.ticket}` : ""}</span></div>
+                  <div className="col-start-2 md:col-auto text-muted-foreground truncate">{c.atendimento || "—"}</div>
+                  <div className="col-start-2 md:col-auto text-xs md:text-sm text-primary">{c.canal || "—"}</div>
+                  <div className="col-start-3 row-start-1 row-span-3 md:col-auto md:row-auto flex justify-end gap-1 self-start md:self-center">
+                    <Button variant="ghost" size="icon" aria-label="Editar ligação" onClick={() => startEdit(c)}>
                       <Pencil className="size-4 text-muted-foreground" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => askDelete(c.id)}>
+                    <Button variant="ghost" size="icon" aria-label="Excluir ligação" onClick={() => askDelete(c.id)}>
                       <Trash2 className="size-4 text-destructive" />
                     </Button>
                   </div>
@@ -299,6 +322,7 @@ function IndexPage() {
             </div>
           ))}
         </Card>
+        </section>
 
         <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
           <AlertDialogContent>

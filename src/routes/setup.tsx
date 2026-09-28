@@ -9,7 +9,14 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/setup")({
   component: SetupPage,
-  head: () => ({ meta: [{ title: "Primeiro acesso — CallTrack" }] }),
+  head: () => ({ meta: [
+    { title: "Primeiro acesso — CallTrack" },
+    { name: "description", content: "Configure o primeiro acesso ao CallTrack." },
+    { property: "og:title", content: "Primeiro acesso — CallTrack" },
+    { property: "og:description", content: "Configure o primeiro acesso ao CallTrack." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
 });
 
 function SetupPage() {
@@ -54,7 +61,7 @@ function SetupPage() {
             <Label htmlFor="password">Senha</Label>
             <Input id="password" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full bg-coral text-coral-foreground hover:bg-coral/85" disabled={loading}>
             {loading ? "Criando..." : "Criar conta"}
           </Button>
         </form>
