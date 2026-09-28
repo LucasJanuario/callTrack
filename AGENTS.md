@@ -1,0 +1,2 @@
+Use semantic theme tokens in src/styles.css for the shared blue/coral light and dark palette, because all existing screens and controls must remain visually consistent without changing behavior.
+Keep call entry, reporting, notes, employee management, and authentication in their existing routes, because the redesign is presentation-only.

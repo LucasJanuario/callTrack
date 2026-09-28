@@ -11,7 +11,14 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/anotacoes")({
   component: AnotacoesPage,
-  head: () => ({ meta: [{ title: "Anotações — CallTrack" }] }),
+  head: () => ({ meta: [
+    { title: "Anotações — CallTrack" },
+    { name: "description", content: "Compartilhe e consulte as anotações da equipe no CallTrack." },
+    { property: "og:title", content: "Anotações — CallTrack" },
+    { property: "og:description", content: "Compartilhe e consulte as anotações da equipe no CallTrack." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
 });
 
 interface Note {
@@ -93,7 +100,7 @@ function AnotacoesPage() {
             <h1 className="text-2xl font-bold flex items-center gap-2"><StickyNote className="size-6" /> Anotações</h1>
             <p className="text-sm text-muted-foreground">Bloco de notas compartilhado — visível para todos.</p>
           </div>
-          <Button onClick={add}><Plus className="size-4" /> Nova anotação</Button>
+          <Button onClick={add} className="bg-coral text-coral-foreground hover:bg-coral/85"><Plus className="size-4" /> Nova anotação</Button>
         </div>
 
         {notes.length === 0 ? (

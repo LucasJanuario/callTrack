@@ -10,7 +10,14 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/auth")({
   component: AuthPage,
-  head: () => ({ meta: [{ title: "Entrar — CallTrack" }] }),
+  head: () => ({ meta: [
+    { title: "Entrar — CallTrack" },
+    { name: "description", content: "Acesse o CallTrack para registrar seus atendimentos." },
+    { property: "og:title", content: "Entrar — CallTrack" },
+    { property: "og:description", content: "Acesse o CallTrack para registrar seus atendimentos." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
 });
 
 function AuthPage() {
@@ -34,13 +41,13 @@ function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen grid place-items-center px-4" style={{ background: "linear-gradient(135deg, oklch(0.97 0.02 250), oklch(0.94 0.05 260))" }}>
-      <Card className="w-full max-w-sm p-8 shadow-[var(--shadow-elev)]">
-        <div className="flex flex-col items-center mb-6">
-          <div className="size-12 rounded-xl grid place-items-center text-primary-foreground mb-3" style={{ background: "var(--gradient-brand)" }}>
+    <div className="min-h-screen grid place-items-center px-4 bg-background">
+      <Card className="w-full max-w-sm p-8 shadow-[var(--shadow-elev)] border-border">
+        <div className="flex flex-col items-center mb-7">
+          <div className="size-12 rounded-md grid place-items-center bg-brand-dark text-coral mb-4">
             <Phone className="size-6" />
           </div>
-          <h1 className="text-2xl font-semibold">CallTrack</h1>
+          <h1 className="text-2xl font-bold">CallTrack</h1>
           <p className="text-sm text-muted-foreground">Entre para registrar suas ligações</p>
         </div>
         <form onSubmit={onSubmit} className="space-y-4">
@@ -52,7 +59,7 @@ function AuthPage() {
             <Label htmlFor="password">Senha</Label>
             <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full bg-coral text-coral-foreground hover:bg-coral/85" disabled={loading}>
             {loading ? "Entrando..." : "Entrar"}
           </Button>
         </form>

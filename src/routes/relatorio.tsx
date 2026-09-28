@@ -13,7 +13,14 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/relatorio")({
   component: RelatorioPage,
-  head: () => ({ meta: [{ title: "Relatório — CallTrack" }] }),
+  head: () => ({ meta: [
+    { title: "Relatório — CallTrack" },
+    { name: "description", content: "Consulte o relatório de ligações por funcionário, data e canal." },
+    { property: "og:title", content: "Relatório — CallTrack" },
+    { property: "og:description", content: "Consulte o relatório de ligações por funcionário, data e canal." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
 });
 
 interface Profile { id: string; full_name: string }
@@ -76,7 +83,7 @@ function RelatorioPage() {
           </Button>
         </div>
 
-        <Card className="p-4 print:hidden">
+         <Card className="p-4 print:hidden shadow-[var(--shadow-soft)]">
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <div className="space-y-1.5">
               <Label className="text-xs">Funcionário</Label>
@@ -117,8 +124,8 @@ function RelatorioPage() {
           <p className="text-sm">Período: {fmt(from)} a {fmt(to)}</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <Card className="p-4 lg:col-span-1">
+         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+           <Card className="p-4 lg:col-span-1 shadow-[var(--shadow-soft)]">
             <h3 className="font-semibold mb-3">Resumo quantitativo</h3>
             {summary.length === 0 ? (
               <p className="text-sm text-muted-foreground">Sem dados.</p>
@@ -137,14 +144,14 @@ function RelatorioPage() {
             )}
           </Card>
 
-          <Card className="lg:col-span-2 overflow-hidden">
-            <div className="grid grid-cols-[100px_1fr_1.3fr_1fr_70px] bg-muted/60 text-xs font-medium uppercase tracking-wide text-muted-foreground px-4 py-2">
+           <Card className="lg:col-span-2 overflow-x-auto shadow-[var(--shadow-soft)]">
+             <div className="min-w-[680px] grid grid-cols-[100px_1fr_1.3fr_1fr_70px] bg-muted/60 text-xs font-medium uppercase text-muted-foreground px-4 py-3">
               <div>Data</div><div>Funcionário</div><div>Número</div><div>Atendimento</div><div>Canal</div>
             </div>
             {calls.length === 0 ? (
               <div className="p-10 text-center text-sm text-muted-foreground">Sem registros para o filtro.</div>
             ) : calls.map((c) => (
-              <div key={c.id} className="grid grid-cols-[100px_1fr_1.3fr_1fr_70px] px-4 py-2 border-t text-sm">
+               <div key={c.id} className="min-w-[680px] grid grid-cols-[100px_1fr_1.3fr_1fr_70px] px-4 py-3 border-t text-sm">
                 <div className="tabular-nums">{fmt(c.call_date)}</div>
                 <div>{nameOf(c.user_id)}</div>
                 <div className="font-mono">{c.numero}</div>
