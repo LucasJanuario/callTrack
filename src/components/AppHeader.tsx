@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/hooks/useTheme";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Phone, LogOut, FileBarChart2, Users, StickyNote, Sun, Moon } from "lucide-react";
+import { Phone, LogOut, FileBarChart2, Users, StickyNote, Sun, Moon, BarChart3 } from "lucide-react";
 
 interface AppHeaderProps {
   date?: string;
@@ -37,6 +37,9 @@ export function AppHeader({ date, onDateChange }: AppHeaderProps) {
           )}
           <Link to="/anotacoes" className="px-3 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
             <span className="inline-flex items-center gap-1.5"><StickyNote className="size-4" /> Anotações</span>
+          </Link>
+          <Link to="/produtividade" className="px-3 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
+            <span className="inline-flex items-center gap-1.5"><BarChart3 className="size-4" /> Produtividade</span>
           </Link>
         </nav>
         {onDateChange && (
