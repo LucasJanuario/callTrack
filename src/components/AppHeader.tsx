@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/hooks/useTheme";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import logoAsset from "@/assets/calltrack-logo.png.asset.json";
 import { Phone, LogOut, FileBarChart2, Users, StickyNote, Sun, Moon, BarChart3 } from "lucide-react";
 
 interface AppHeaderProps {
@@ -17,11 +18,8 @@ export function AppHeader({ date, onDateChange }: AppHeaderProps) {
   return (
     <header className="border-b bg-card sticky top-0 z-40 shadow-[var(--shadow-soft)]">
       <div className="max-w-6xl mx-auto px-4 min-h-16 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 py-2">
-        <Link to="/" className="flex items-center gap-2 font-display font-bold text-lg shrink-0">
-          <div className="size-8 rounded-md grid place-items-center bg-brand-dark text-coral">
-            <Phone className="size-4" />
-          </div>
-          <span>CallTrack</span>
+        <Link to="/" className="flex items-center shrink-0" aria-label="Calltrack — início">
+          <img src={logoAsset.url} alt="Calltrack" className="h-11 w-auto max-w-32 object-contain" />
         </Link>
         <nav className="order-3 w-full md:order-none md:w-auto flex items-center gap-1 overflow-x-auto whitespace-nowrap pb-1 md:pb-0">
           <Link to="/" activeOptions={{ exact: true }} className="px-3 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
