@@ -79,8 +79,8 @@
   --sidebar-border: #DAE3E9;
   --sidebar-ring: #2878A9;
   --brand-dark: #17324D;
-  --coral: #EC806B;
-  --coral-foreground: #17324D;
+  --coral: #0073FD;
+  --coral-foreground: #FFFFFF;
 }
 
 .dark {
@@ -114,8 +114,8 @@
   --sidebar-border: #385060;
   --sidebar-ring: #79BADD;
   --brand-dark: #1C2C39;
-  --coral: #F39C87;
-  --coral-foreground: #152431;
+  --coral: #0073FD;
+  --coral-foreground: #FFFFFF;
 }
 
 @layer base {
