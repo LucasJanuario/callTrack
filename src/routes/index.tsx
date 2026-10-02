@@ -307,7 +307,7 @@ function IndexPage() {
                 <>
                   <div className="hidden md:block">{c.ticket || "—"}</div>
                   <div className="font-semibold md:font-normal break-all md:break-normal">{c.numero}<span className="md:hidden text-xs text-muted-foreground font-normal ml-2">#{i + 1}{c.ticket ? ` · Ticket ${c.ticket}` : ""}</span></div>
-                  <div className="col-start-2 md:col-auto text-muted-foreground truncate">{c.atendimento || "—"}</div>
+                  <div className="col-start-2 md:col-auto text-muted-foreground whitespace-normal break-words min-w-0">{c.atendimento || "—"}</div>
                   <div className="col-start-2 md:col-auto text-xs md:text-sm text-primary">{c.canal || "—"}</div>
                   <div className="col-start-3 row-start-1 row-span-3 md:col-auto md:row-auto flex justify-end gap-1 self-start md:self-center">
                     <Button variant="ghost" size="icon" aria-label="Editar ligação" onClick={() => startEdit(c)}>
