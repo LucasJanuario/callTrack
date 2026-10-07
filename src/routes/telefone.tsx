@@ -57,7 +57,7 @@ function TelefonePage() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-[340px_1fr]">
-          <Card className="p-6 flex flex-col items-center text-center shadow-[var(--shadow-soft)] bg-brand-dark text-white">
+          <Card className="p-6 flex flex-col items-center text-center shadow-[var(--shadow-soft)] bg-brand-dark text-coral-foreground">
             <div className={`size-28 rounded-full flex items-center justify-center bg-coral/20 ${status === "calling" || status === "ringing" ? "animate-pulse" : ""}`}>
               <div className="size-20 rounded-full bg-coral flex items-center justify-center">
                 {peer ? <span className="text-3xl font-display font-bold">{peer.name.charAt(0).toUpperCase()}</span> : <Phone className="size-9" />}
@@ -68,7 +68,7 @@ function TelefonePage() {
 
             <div className="mt-6 flex gap-4">
               {status === "ringing" && (
-                <Button size="icon" className="size-14 rounded-full bg-success hover:bg-success/85 text-white" aria-label="Atender" onClick={accept}>
+                <Button size="icon" className="size-14 rounded-full bg-success hover:bg-success/85 text-success-foreground" aria-label="Atender" onClick={accept}>
                   <Phone className="size-6" />
                 </Button>
               )}

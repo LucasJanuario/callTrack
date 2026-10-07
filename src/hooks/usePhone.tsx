@@ -169,7 +169,7 @@ export function PhoneProvider({ children }: { children: ReactNode }) {
           <p className="text-xs font-bold uppercase text-primary">Ligação recebida</p>
           <p className="mt-1 text-lg font-display font-bold truncate">{peer.name}</p>
           <div className="mt-4 flex gap-2">
-            <Button className="flex-1 bg-success text-white hover:bg-success/85" onClick={accept}><Phone className="size-4" /> Atender</Button>
+            <Button className="flex-1 bg-success text-success-foreground hover:bg-success/85" onClick={accept}><Phone className="size-4" /> Atender</Button>
             <Button variant="destructive" className="flex-1" onClick={hangup}><PhoneOff className="size-4" /> Recusar</Button>
           </div>
         </div>
