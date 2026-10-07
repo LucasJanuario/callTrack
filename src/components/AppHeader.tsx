@@ -25,6 +25,9 @@ export function AppHeader({ date, onDateChange }: AppHeaderProps) {
           <Link to="/" activeOptions={{ exact: true }} className="px-3 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
             <span className="inline-flex items-center gap-1.5"><Phone className="size-4" /> Ligações</span>
           </Link>
+          <Link to="/telefone" className="px-3 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
+            <span className="inline-flex items-center gap-1.5"><PhoneCall className="size-4" /> Telefone</span>
+          </Link>
           <Link to="/relatorio" className="px-3 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
             <span className="inline-flex items-center gap-1.5"><FileBarChart2 className="size-4" /> Relatório</span>
           </Link>
@@ -38,9 +41,6 @@ export function AppHeader({ date, onDateChange }: AppHeaderProps) {
           </Link>
           <Link to="/produtividade" className="px-3 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
             <span className="inline-flex items-center gap-1.5"><BarChart3 className="size-4" /> Produtividade</span>
-          </Link>
-          <Link to="/telefone" className="px-3 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
-            <span className="inline-flex items-center gap-1.5"><PhoneCall className="size-4" /> Telefone</span>
           </Link>
         </nav>
         {onDateChange && (
