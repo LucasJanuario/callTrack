@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TelefoneRouteImport } from './routes/telefone'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as RelatorioRouteImport } from './routes/relatorio'
 import { Route as ProdutividadeRouteImport } from './routes/produtividade'
@@ -17,6 +18,11 @@ import { Route as AnotacoesRouteImport } from './routes/anotacoes'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TelefoneRoute = TelefoneRouteImport.update({
+  id: '/telefone',
+  path: '/telefone',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SetupRoute = SetupRouteImport.update({
   id: '/setup',
   path: '/setup',
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/produtividade': typeof ProdutividadeRoute
   '/relatorio': typeof RelatorioRoute
   '/setup': typeof SetupRoute
+  '/telefone': typeof TelefoneRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/produtividade': typeof ProdutividadeRoute
   '/relatorio': typeof RelatorioRoute
   '/setup': typeof SetupRoute
+  '/telefone': typeof TelefoneRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/produtividade': typeof ProdutividadeRoute
   '/relatorio': typeof RelatorioRoute
   '/setup': typeof SetupRoute
+  '/telefone': typeof TelefoneRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/produtividade'
     | '/relatorio'
     | '/setup'
+    | '/telefone'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/produtividade'
     | '/relatorio'
     | '/setup'
+    | '/telefone'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/produtividade'
     | '/relatorio'
     | '/setup'
+    | '/telefone'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,10 +131,18 @@ export interface RootRouteChildren {
   ProdutividadeRoute: typeof ProdutividadeRoute
   RelatorioRoute: typeof RelatorioRoute
   SetupRoute: typeof SetupRoute
+  TelefoneRoute: typeof TelefoneRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/telefone': {
+      id: '/telefone'
+      path: '/telefone'
+      fullPath: '/telefone'
+      preLoaderRoute: typeof TelefoneRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/setup': {
       id: '/setup'
       path: '/setup'
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProdutividadeRoute: ProdutividadeRoute,
   RelatorioRoute: RelatorioRoute,
   SetupRoute: SetupRoute,
+  TelefoneRoute: TelefoneRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
