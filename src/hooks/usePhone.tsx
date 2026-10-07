@@ -19,6 +19,9 @@ interface PhoneCtx {
   accept: () => void;
   hangup: () => void;
   toggleMute: () => void;
+  sharing: boolean;
+  remoteScreen: MediaStream | null;
+  toggleShare: () => void;
 }
 
 const Ctx = createContext<PhoneCtx | undefined>(undefined);
@@ -31,6 +34,10 @@ export function PhoneProvider({ children }: { children: ReactNode }) {
   const [online, setOnline] = useState<Peer[]>([]);
   const [muted, setMuted] = useState(false);
   const [startedAt, setStartedAt] = useState<number | null>(null);
+  const [sharing, setSharing] = useState(false);
+  const [remoteScreen, setRemoteScreen] = useState<MediaStream | null>(null);
+  const screenRef = useRef<MediaStream | null>(null);
+  const screenSender = useRef<RTCRtpSender | null>(null);
 
   const chRef = useRef<RealtimeChannel | null>(null);
   const pcRef = useRef<RTCPeerConnection | null>(null);
@@ -51,6 +58,9 @@ export function PhoneProvider({ children }: { children: ReactNode }) {
     pcRef.current = null;
     localRef.current?.getTracks().forEach((t) => t.stop());
     localRef.current = null;
+    screenRef.current?.getTracks().forEach((t) => t.stop());
+    screenRef.current = null; screenSender.current = null;
+    setSharing(false); setRemoteScreen(null);
     pendingIce.current = [];
     if (audioRef.current) audioRef.current.srcObject = null;
     setStatus("idle"); setPeer(null); setMuted(false); setStartedAt(null);
@@ -62,7 +72,9 @@ export function PhoneProvider({ children }: { children: ReactNode }) {
     const pc = new RTCPeerConnection({ iceServers: ICE });
     stream.getTracks().forEach((t) => pc.addTrack(t, stream));
     pc.onicecandidate = (e) => { if (e.candidate) send("ice", to, { candidate: e.candidate.toJSON() }); };
-    pc.ontrack = (e) => { if (audioRef.current) { audioRef.current.srcObject = e.streams[0]; void audioRef.current.play().catch(() => {}); } };
+    pc.ontrack = (e) => {
+      if (e.track.kind === "video") { setRemoteScreen(new MediaStream([e.track])); e.track.onended = () => setRemoteScreen(null); return; }
+      if (audioRef.current) { audioRef.current.srcObject = e.streams[0]; void audioRef.current.play().catch(() => {}); } };
     pc.onconnectionstatechange = () => {
       if (pc.connectionState === "connected") { setStatus("incall"); setStartedAt(Date.now()); }
       if (pc.connectionState === "failed") { toast.error("A ligação caiu"); cleanup(); }
@@ -114,6 +126,8 @@ export function PhoneProvider({ children }: { children: ReactNode }) {
           const pc = pcRef.current;
           if (pc?.remoteDescription) await pc.addIceCandidate(payload.candidate).catch(() => {});
           else pendingIce.current.push(payload.candidate);
+        } else if (event === "share-stop" && isPeer) {
+          setRemoteScreen(null);
         } else if (event === "busy" && isPeer) {
           toast.info(`${from.name} está em outra ligação`); cleanup();
         } else if (event === "reject" && isPeer) {
@@ -160,8 +174,40 @@ export function PhoneProvider({ children }: { children: ReactNode }) {
     setMuted(next);
   };
 
+  const renegotiate = async () => {
+    const pc = pcRef.current, p = peerRef.current; if (!pc || !p) return;
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    send("offer", p.id, { sdp: offer });
+  };
+
+  const stopShare = async () => {
+    const pc = pcRef.current;
+    screenRef.current?.getTracks().forEach((t) => t.stop());
+    screenRef.current = null;
+    if (pc && screenSender.current) { pc.removeTrack(screenSender.current); screenSender.current = null; await renegotiate(); }
+    if (peerRef.current) send("share-stop", peerRef.current.id);
+    setSharing(false);
+  };
+
+  const toggleShare = async () => {
+    if (sharing) return void stopShare();
+    const pc = pcRef.current; if (!pc || statusRef.current !== "incall") return;
+    try {
+      const screen = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      const track = screen.getVideoTracks()[0];
+      screenRef.current = screen;
+      screenSender.current = pc.addTrack(track, screen);
+      track.onended = () => void stopShare();
+      setSharing(true);
+      await renegotiate();
+    } catch {
+      toast.error("Não foi possível compartilhar a tela");
+    }
+  };
+
   return (
-    <Ctx.Provider value={{ status, peer, online, muted, startedAt, call, accept, hangup, toggleMute }}>
+    <Ctx.Provider value={{ status, peer, online, muted, startedAt, call, accept, hangup, toggleMute, sharing, remoteScreen, toggleShare }}>
       {children}
       <audio ref={audioRef} autoPlay className="hidden" />
       {status === "ringing" && peer && (

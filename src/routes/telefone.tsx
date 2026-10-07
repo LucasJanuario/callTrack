@@ -1,12 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { usePhone } from "@/hooks/usePhone";
 import { AppHeader } from "@/components/AppHeader";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Phone, PhoneOff, Mic, MicOff, Search, UserRound } from "lucide-react";
+import { Phone, PhoneOff, Mic, MicOff, Search, UserRound, MonitorUp, MonitorX } from "lucide-react";
 
 export const Route = createFileRoute("/telefone")({
   component: TelefonePage,
@@ -28,7 +28,9 @@ function fmt(ms: number) {
 function TelefonePage() {
   const { user, loading } = useAuth();
   const nav = useNavigate();
-  const { status, peer, online, muted, startedAt, call, accept, hangup, toggleMute } = usePhone();
+  const { status, peer, online, muted, startedAt, call, accept, hangup, toggleMute, sharing, remoteScreen, toggleShare } = usePhone();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  useEffect(() => { if (videoRef.current) videoRef.current.srcObject = remoteScreen; }, [remoteScreen]);
   const [q, setQ] = useState("");
   const [now, setNow] = useState(Date.now());
 
@@ -56,6 +58,14 @@ function TelefonePage() {
           <p className="text-sm text-muted-foreground">Ligue por voz para colegas que estão com o sistema aberto.</p>
         </div>
 
+        {remoteScreen && (
+          <Card className="overflow-hidden shadow-[var(--shadow-soft)]">
+            <div className="px-4 py-2 text-xs font-bold uppercase text-muted-foreground border-b">Tela de {peer?.name}</div>
+            <video ref={videoRef} autoPlay playsInline muted className="w-full max-h-[70vh] bg-brand-dark object-contain" />
+          </Card>
+        )}
+        {sharing && <p className="text-sm text-primary font-semibold">Você está compartilhando sua tela.</p>}
+
         <div className="grid gap-6 md:grid-cols-[340px_1fr]">
           <Card className="p-6 flex flex-col items-center text-center shadow-[var(--shadow-soft)] bg-brand-dark text-coral-foreground">
             <div className={`size-28 rounded-full flex items-center justify-center bg-coral/20 ${status === "calling" || status === "ringing" ? "animate-pulse" : ""}`}>
@@ -75,6 +85,11 @@ function TelefonePage() {
               {(status === "incall" || status === "connecting") && (
                 <Button size="icon" variant="secondary" className="size-14 rounded-full" aria-label={muted ? "Ativar microfone" : "Silenciar"} onClick={toggleMute}>
                   {muted ? <MicOff className="size-6" /> : <Mic className="size-6" />}
+                </Button>
+              )}
+              {status === "incall" && (
+                <Button size="icon" variant="secondary" className="size-14 rounded-full" aria-label={sharing ? "Parar compartilhamento" : "Compartilhar tela"} title={sharing ? "Parar compartilhamento" : "Compartilhar tela"} onClick={toggleShare}>
+                  {sharing ? <MonitorX className="size-6" /> : <MonitorUp className="size-6" />}
                 </Button>
               )}
               {status !== "idle" && (
