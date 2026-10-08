@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Link2, Loader2, RefreshCw } from "lucide-react";
 import { fetchSheetCsv } from "@/lib/sheets.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/produtividade")({
   component: ProdutividadePage,
@@ -25,7 +26,8 @@ export const Route = createFileRoute("/produtividade")({
   }),
 });
 
-const STORAGE_KEY = "produtividade_sheet_url";
+const STORAGE_KEY = "produtividade_sheet_url"; // legado (localStorage), usado só para migração
+const SETTINGS_KEY = "produtividade_sheet_url";
 const METRICS = ["FONE", "CHAT", "TICKET", "TOTAL"];
 
 export function parseSheetUrl(url: string): { sheetId: string; gid: string } | null {
@@ -113,9 +115,21 @@ function ProdutividadePage() {
 
   useEffect(() => { if (!loading && !user) nav({ to: "/auth" }); }, [user, loading, nav]);
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY) ?? "";
-    setUrl(saved); setDraft(saved);
-  }, []);
+    if (!user) return;
+    void (async () => {
+      const { data } = await supabase.from("app_settings").select("value").eq("key", SETTINGS_KEY).maybeSingle();
+      let saved = data?.value ?? "";
+      if (!saved) {
+        // Migração automática: se o link existia apenas neste navegador, sobe para a nuvem (admin)
+        const local = localStorage.getItem(STORAGE_KEY) ?? "";
+        if (local && role === "admin") {
+          await supabase.from("app_settings").upsert({ key: SETTINGS_KEY, value: local });
+          saved = local;
+        }
+      }
+      setUrl(saved); setDraft(saved);
+    })();
+  }, [user, role]);
 
   const load = useCallback(async (u: string) => {
     const p = parseSheetUrl(u);
@@ -133,12 +147,14 @@ function ProdutividadePage() {
 
   const table = useMemo(() => (rows ? buildTable(rows) : null), [rows]);
 
-  function save() {
+  async function save() {
     const p = parseSheetUrl(draft);
     if (!p) return toast.error("URL inválida. Cole o link completo da planilha do Google Sheets.");
-    localStorage.setItem(STORAGE_KEY, draft);
+    const { error: err } = await supabase.from("app_settings").upsert({ key: SETTINGS_KEY, value: draft });
+    if (err) return toast.error("Não foi possível salvar o link. Apenas administradores podem alterar.");
+    localStorage.removeItem(STORAGE_KEY);
     setUrl(draft);
-    toast.success(`Planilha vinculada (aba gid=${p.gid})`);
+    toast.success(`Planilha vinculada para todos (aba gid=${p.gid})`);
   }
 
   if (loading || !user) return null;
