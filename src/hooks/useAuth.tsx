@@ -73,6 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(s?.user ?? null);
       if (event === "SIGNED_IN" && s?.user) {
         storeLoginMoment();
+        localStorage.setItem(SESSION_VERSION_KEY, SESSION_VERSION);
       }
       if (event === "SIGNED_OUT") {
         clearLoginMoment();
