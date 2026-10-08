@@ -94,10 +94,13 @@ export function PhoneProvider({ children }: { children: ReactNode }) {
     const ch = supabase.channel("calltrack-phone", { config: { presence: { key: user.id }, broadcast: { self: false } } });
     chRef.current = ch;
 
-    ch.on("presence", { event: "sync" }, () => {
+    const refreshOnline = () => {
       const state = ch.presenceState<{ name: string }>();
       setOnline(Object.entries(state).filter(([id]) => id !== user.id).map(([id, metas]) => ({ id, name: metas[0]?.name ?? "Usuário" })));
-    });
+    };
+    ch.on("presence", { event: "sync" }, refreshOnline);
+    ch.on("presence", { event: "join" }, refreshOnline);
+    ch.on("presence", { event: "leave" }, refreshOnline);
 
     ch.on("broadcast", { event: "*" }, async ({ event, payload }) => {
       if (payload.to !== user.id) return;
@@ -140,8 +143,21 @@ export function PhoneProvider({ children }: { children: ReactNode }) {
       }
     });
 
-    ch.subscribe((s) => { if (s === "SUBSCRIBED") void ch.track({ name: fullName ?? "Usuário" }); });
-    return () => { void supabase.removeChannel(ch); chRef.current = null; };
+    const announce = () => { void ch.track({ name: fullName ?? "Usuário" }); };
+    ch.subscribe((s) => {
+      if (s === "SUBSCRIBED") announce();
+      if (s === "CHANNEL_ERROR" || s === "TIMED_OUT" || s === "CLOSED") setTimeout(() => { if (chRef.current === ch) ch.subscribe(); }, 3000);
+    });
+    const onWake = () => { if (document.visibilityState === "visible") { announce(); refreshOnline(); } };
+    document.addEventListener("visibilitychange", onWake);
+    window.addEventListener("focus", onWake);
+    const heartbeat = setInterval(announce, 30000);
+    return () => {
+      clearInterval(heartbeat);
+      document.removeEventListener("visibilitychange", onWake);
+      window.removeEventListener("focus", onWake);
+      void supabase.removeChannel(ch); chRef.current = null;
+    };
   }, [user?.id, fullName]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const call = (p: Peer) => {

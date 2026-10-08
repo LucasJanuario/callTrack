@@ -43,8 +43,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem(LOGIN_AT_KEY);
     };
 
+    // Altere este valor para obrigar todos os usuários a entrar novamente
+    const SESSION_VERSION = "2026-10-08";
+    const SESSION_VERSION_KEY = "auth_session_version";
+
     const checkSessionExpiry = async (s: Session | null) => {
       if (!s?.user) return false;
+      if (localStorage.getItem(SESSION_VERSION_KEY) !== SESSION_VERSION) {
+        await supabase.auth.signOut();
+        clearLoginMoment();
+        localStorage.setItem(SESSION_VERSION_KEY, SESSION_VERSION);
+        return true;
+      }
       const storedDay = localStorage.getItem(LOGIN_DAY_KEY);
       const storedAt = Number(localStorage.getItem(LOGIN_AT_KEY));
       const expiredByDay = Boolean(storedDay && storedDay !== todayStr());
