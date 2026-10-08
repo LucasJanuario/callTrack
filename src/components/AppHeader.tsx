@@ -21,7 +21,7 @@ export function AppHeader({ date, onDateChange }: AppHeaderProps) {
         <Link to="/" className="flex items-center shrink-0" aria-label="Calltrack — início">
           <img src={logoAsset.url} alt="Calltrack" className="h-11 w-auto max-w-32 object-contain" />
         </Link>
-        <nav className="col-span-3 order-3 md:col-span-1 md:order-none flex items-center justify-start md:justify-center gap-1 overflow-x-auto whitespace-nowrap pb-1 md:pb-0 min-w-0">
+        <nav className="col-span-3 order-3 md:col-span-1 md:order-none flex items-center justify-start gap-0.5 overflow-x-auto whitespace-nowrap pb-1 md:pb-0 min-w-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <Link to="/" activeOptions={{ exact: true }} className="px-3 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
             <span className="inline-flex items-center gap-1.5"><Phone className="size-4" /> Ligações</span>
           </Link>
