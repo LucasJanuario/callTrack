@@ -22,24 +22,24 @@ export function AppHeader({ date, onDateChange }: AppHeaderProps) {
           <img src={logoAsset.url} alt="Calltrack" className="h-11 w-auto max-w-32 object-contain" />
         </Link>
         <nav className="col-span-3 order-3 md:col-span-1 md:order-none flex items-center justify-start gap-0.5 overflow-x-auto whitespace-nowrap pb-1 md:pb-0 min-w-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <Link to="/" activeOptions={{ exact: true }} className="px-3 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
+          <Link to="/" activeOptions={{ exact: true }} className="px-2.5 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
             <span className="inline-flex items-center gap-1.5"><Phone className="size-4" /> Ligações</span>
           </Link>
-          <Link to="/telefone" className="px-3 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
+          <Link to="/telefone" className="px-2.5 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
             <span className="inline-flex items-center gap-1.5"><PhoneCall className="size-4" /> Telefone</span>
           </Link>
-          <Link to="/relatorio" className="px-3 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
+          <Link to="/relatorio" className="px-2.5 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
             <span className="inline-flex items-center gap-1.5"><FileBarChart2 className="size-4" /> Relatório</span>
           </Link>
           {role === "admin" && (
-            <Link to="/admin" className="px-3 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
+            <Link to="/admin" className="px-2.5 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
               <span className="inline-flex items-center gap-1.5"><Users className="size-4" /> Funcionários</span>
             </Link>
           )}
-          <Link to="/anotacoes" className="px-3 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
+          <Link to="/anotacoes" className="px-2.5 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
             <span className="inline-flex items-center gap-1.5"><StickyNote className="size-4" /> Anotações</span>
           </Link>
-          <Link to="/produtividade" className="px-3 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
+          <Link to="/produtividade" className="px-2.5 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
             <span className="inline-flex items-center gap-1.5"><BarChart3 className="size-4" /> Produtividade</span>
           </Link>
         </nav>
