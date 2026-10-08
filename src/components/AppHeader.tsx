@@ -43,17 +43,15 @@ export function AppHeader({ date, onDateChange }: AppHeaderProps) {
             <span className="inline-flex items-center gap-1.5"><BarChart3 className="size-4" /> Produtividade</span>
           </Link>
         </nav>
-        {onDateChange && (
-          <div className="hidden lg:flex flex-col justify-center">
+        <div className="flex items-center gap-2 shrink-0 justify-self-end">
+          {onDateChange && (
             <Input
               type="date"
               value={date}
               onChange={(e) => onDateChange(e.target.value)}
-              className="h-9 text-sm px-2 bg-muted border-0"
+              className="hidden lg:block h-9 w-auto text-sm px-2 bg-muted border-0"
             />
-          </div>
-        )}
-        <div className="flex items-center gap-2">
+          )}
           <Button variant="ghost" size="icon" onClick={toggle} aria-label="Alternar tema">
             {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
           </Button>
