@@ -25,8 +25,10 @@ import simpsonsAsset from "@/assets/simpsons.png.asset.json";
 import rockAsset from "@/assets/rock.png.asset.json";
 import ruivoAsset from "@/assets/ruivo.png.asset.json";
 import shrekAsset from "@/assets/shrek.png.asset.json";
+import lulaAsset from "@/assets/lula.png.asset.json";
 
 function getMoodImage(count: number): { url: string; alt: string } {
+  if (count === 13) return { url: lulaAsset.url, alt: "Lula" };
   if (count >= 15) return { url: shrekAsset.url, alt: "Shrek" };
   if (count >= 10) return { url: ruivoAsset.url, alt: "Ruivo" };
   if (count >= 5) return { url: rockAsset.url, alt: "The Rock" };
