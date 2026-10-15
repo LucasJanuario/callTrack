@@ -26,8 +26,10 @@ import rockAsset from "@/assets/rock.png.asset.json";
 import ruivoAsset from "@/assets/ruivo.png.asset.json";
 import shrekAsset from "@/assets/shrek.png.asset.json";
 import lulaAsset from "@/assets/lula.png.asset.json";
+import bolsonaroAsset from "@/assets/bolsonaro.png.asset.json";
 
 function getMoodImage(count: number): { url: string; alt: string } {
+  if (count === 22) return { url: bolsonaroAsset.url, alt: "Bolsomito" };
   if (count === 13) return { url: lulaAsset.url, alt: "Lula" };
   if (count >= 15) return { url: shrekAsset.url, alt: "Shrek" };
   if (count >= 10) return { url: ruivoAsset.url, alt: "Ruivo" };
