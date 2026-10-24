@@ -4,7 +4,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import logoAsset from "@/assets/calltrack-logo.png.asset.json";
-import { Phone, LogOut, FileBarChart2, Users, StickyNote, Sun, Moon, BarChart3, PhoneCall } from "lucide-react";
+import { Phone, LogOut, FileBarChart2, Users, StickyNote, Sun, Moon, BarChart3, PhoneCall, Clock } from "lucide-react";
 
 interface AppHeaderProps {
   date?: string;
@@ -41,6 +41,9 @@ export function AppHeader({ date, onDateChange }: AppHeaderProps) {
           </Link>
           <Link to="/produtividade" className="px-2 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
             <span className="inline-flex items-center gap-1.5"><BarChart3 className="size-4" /> Produtividade</span>
+          </Link>
+          <Link to="/horas" className="px-2 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
+            <span className="inline-flex items-center gap-1.5"><Clock className="size-4" /> Horas</span>
           </Link>
         </nav>
         <div className="flex items-center gap-2 shrink-0 justify-self-end">

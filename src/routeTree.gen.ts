@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AnotacoesRouteImport } from './routes/anotacoes'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as HorasRouteImport } from './routes/horas'
 import { Route as ProdutividadeRouteImport } from './routes/produtividade'
 import { Route as RelatorioRouteImport } from './routes/relatorio'
 import { Route as SetupRouteImport } from './routes/setup'
@@ -36,6 +37,11 @@ const AnotacoesRoute = AnotacoesRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HorasRoute = HorasRouteImport.update({
+  id: '/horas',
+  path: '/horas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProdutividadeRoute = ProdutividadeRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/anotacoes': typeof AnotacoesRoute
   '/auth': typeof AuthRoute
+  '/horas': typeof HorasRoute
   '/produtividade': typeof ProdutividadeRoute
   '/relatorio': typeof RelatorioRoute
   '/setup': typeof SetupRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/anotacoes': typeof AnotacoesRoute
   '/auth': typeof AuthRoute
+  '/horas': typeof HorasRoute
   '/produtividade': typeof ProdutividadeRoute
   '/relatorio': typeof RelatorioRoute
   '/setup': typeof SetupRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/anotacoes': typeof AnotacoesRoute
   '/auth': typeof AuthRoute
+  '/horas': typeof HorasRoute
   '/produtividade': typeof ProdutividadeRoute
   '/relatorio': typeof RelatorioRoute
   '/setup': typeof SetupRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/anotacoes'
     | '/auth'
+    | '/horas'
     | '/produtividade'
     | '/relatorio'
     | '/setup'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/anotacoes'
     | '/auth'
+    | '/horas'
     | '/produtividade'
     | '/relatorio'
     | '/setup'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/anotacoes'
     | '/auth'
+    | '/horas'
     | '/produtividade'
     | '/relatorio'
     | '/setup'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   AnotacoesRoute: typeof AnotacoesRoute
   AuthRoute: typeof AuthRoute
+  HorasRoute: typeof HorasRoute
   ProdutividadeRoute: typeof ProdutividadeRoute
   RelatorioRoute: typeof RelatorioRoute
   SetupRoute: typeof SetupRoute
@@ -162,6 +175,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/horas': {
+      id: '/horas'
+      path: '/horas'
+      fullPath: '/horas'
+      preLoaderRoute: typeof HorasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/produtividade': {
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   AnotacoesRoute: AnotacoesRoute,
   AuthRoute: AuthRoute,
+  HorasRoute: HorasRoute,
   ProdutividadeRoute: ProdutividadeRoute,
   RelatorioRoute: RelatorioRoute,
   SetupRoute: SetupRoute,

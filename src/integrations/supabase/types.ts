@@ -95,21 +95,51 @@ export type Database = {
         }
         Relationships: []
       }
+      overtime_entries: {
+        Row: {
+          created_at: string
+          entry_date: string
+          hours_100: number
+          hours_70: number
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          entry_date?: string
+          hours_100?: number
+          hours_70?: number
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          entry_date?: string
+          hours_100?: number
+          hours_70?: number
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
           full_name: string
           id: string
+          salario: number | null
         }
         Insert: {
           created_at?: string
           full_name?: string
           id: string
+          salario?: number | null
         }
         Update: {
           created_at?: string
           full_name?: string
           id?: string
+          salario?: number | null
         }
         Relationships: []
       }
