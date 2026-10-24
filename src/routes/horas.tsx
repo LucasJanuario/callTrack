@@ -161,11 +161,8 @@ function HorasPage() {
   const totals = useMemo(() => {
     const t100 = entries.reduce((s, e) => s + Number(e.hours_100), 0);
     const t70 = entries.reduce((s, e) => s + Number(e.hours_70), 0);
-    const hourly = savedSalary ? savedSalary / HOURS_PER_MONTH : 0;
-    const v100 = t100 * hourly * 2;
-    const v70 = t70 * hourly * 1.7;
-    return { t100, t70, hourly, v100, v70, total: v100 + v70 };
-  }, [entries, savedSalary]);
+    return { t100, t70, ...calcOvertime(savedSalary ?? 0, t100, t70, month) };
+  }, [entries, savedSalary, month]);
 
   if (loading || !user) return null;
 
@@ -222,7 +219,7 @@ function HorasPage() {
           </div>
         </Card>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <Card className="p-4 shadow-[var(--shadow-soft)]">
             <div className="text-xs text-muted-foreground">Horas a 100%</div>
             <div className="text-xl font-bold">{totals.t100.toLocaleString("pt-BR")}h</div>
@@ -233,10 +230,16 @@ function HorasPage() {
             <div className="text-xl font-bold">{totals.t70.toLocaleString("pt-BR")}h</div>
             <div className="text-sm text-muted-foreground">{brl(totals.v70)}</div>
           </Card>
+          <Card className="p-4 shadow-[var(--shadow-soft)]">
+            <div className="text-xs text-muted-foreground">Repouso s/ Horas Extras</div>
+            <div className="text-xl font-bold">{totals.dsrHours.toLocaleString("pt-BR")}h</div>
+            <div className="text-sm text-muted-foreground">{brl(totals.dsr)}</div>
+            <div className="text-[11px] text-muted-foreground mt-1">{totals.workDays} dias úteis · {totals.restDays} domingos</div>
+          </Card>
           <Card className="p-4 shadow-[var(--shadow-soft)] bg-coral text-coral-foreground">
             <div className="text-xs opacity-80">Total a receber</div>
             <div className="text-xl font-bold">{brl(totals.total)}</div>
-            <div className="text-sm opacity-80">{(totals.t100 + totals.t70).toLocaleString("pt-BR")}h no mês</div>
+            <div className="text-sm opacity-80">{(totals.t100 + totals.t70).toLocaleString("pt-BR")}h + repouso</div>
           </Card>
         </div>
 
