@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Clock, Plus, Trash2, Pencil, Save, X } from "lucide-react";
 import { toast } from "sonner";
+import { calcOvertime } from "@/lib/overtime";
 
 export const Route = createFileRoute("/horas")({
   component: HorasPage,
