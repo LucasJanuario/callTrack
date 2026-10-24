@@ -4,7 +4,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import logoAsset from "@/assets/calltrack-logo.png.asset.json";
-import { Phone, LogOut, FileBarChart2, Users, StickyNote, Sun, Moon, BarChart3, PhoneCall } from "lucide-react";
+import { Phone, LogOut, FileBarChart2, Users, StickyNote, Sun, Moon, BarChart3, PhoneCall, Clock } from "lucide-react";
 
 interface AppHeaderProps {
   date?: string;
