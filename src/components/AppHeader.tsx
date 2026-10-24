@@ -42,6 +42,9 @@ export function AppHeader({ date, onDateChange }: AppHeaderProps) {
           <Link to="/produtividade" className="px-2 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
             <span className="inline-flex items-center gap-1.5"><BarChart3 className="size-4" /> Produtividade</span>
           </Link>
+          <Link to="/horas" className="px-2 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
+            <span className="inline-flex items-center gap-1.5"><Clock className="size-4" /> Horas</span>
+          </Link>
         </nav>
         <div className="flex items-center gap-2 shrink-0 justify-self-end">
           {onDateChange && (
