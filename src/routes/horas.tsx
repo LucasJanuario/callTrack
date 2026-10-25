@@ -128,6 +128,7 @@ function HorasPage() {
       hours_70: b,
     });
     if (error) return toast.error(error.message);
+    await loadEntries();
     setH100("");
     setH70("");
     toast.success("Horas adicionadas");
@@ -149,6 +150,7 @@ function HorasPage() {
       .update({ entry_date: editDate, hours_100: a, hours_70: b })
       .eq("id", editingId);
     if (error) return toast.error(error.message);
+    await loadEntries();
     setEditingId(null);
     toast.success("Horas atualizadas");
   }
@@ -156,7 +158,8 @@ function HorasPage() {
   async function removeEntry(id: string) {
     if (!confirm("Excluir este registro de horas?")) return;
     const { error } = await supabase.from("overtime_entries").delete().eq("id", id);
-    if (error) toast.error(error.message);
+    if (error) return toast.error(error.message);
+    await loadEntries();
   }
 
   const totals = useMemo(() => {
