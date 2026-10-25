@@ -15,6 +15,13 @@
       "when": 1792853775488,
       "tag": "0001_add_overtime_hours",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792935467028,
+      "tag": "0002_overtime_pay_month",
+      "breakpoints": true
     }
   ]
 }
