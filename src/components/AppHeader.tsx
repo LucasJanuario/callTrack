@@ -4,6 +4,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import logoAsset from "@/assets/calltrack-logo.png.asset.json";
+import { APP_VERSION } from "@/lib/version";
 import { Phone, LogOut, FileBarChart2, Users, StickyNote, Sun, Moon, BarChart3, PhoneCall, Clock } from "lucide-react";
 
 interface AppHeaderProps {
@@ -18,8 +19,9 @@ export function AppHeader({ date, onDateChange }: AppHeaderProps) {
   return (
     <header className="border-b bg-card sticky top-0 z-40 shadow-[var(--shadow-soft)]">
       <div className="max-w-7xl mx-auto px-4 min-h-16 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 py-2">
-        <Link to="/" className="flex items-center shrink-0" aria-label="Calltrack — início">
+        <Link to="/" className="flex items-center gap-1.5 shrink-0" aria-label="Calltrack — início" title={`Versão ${APP_VERSION}`}>
           <img src={logoAsset.url} alt="Calltrack" className="h-10 w-auto max-w-28 object-contain" />
+          <span className="self-end mb-1 text-[10px] font-medium text-muted-foreground">v{APP_VERSION}</span>
         </Link>
         <nav className="col-span-3 order-3 md:col-span-1 md:order-none flex items-center justify-start gap-0.5 overflow-x-auto whitespace-nowrap pb-1 md:pb-0 min-w-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <Link to="/" activeOptions={{ exact: true }} className="standalone:hidden px-2 py-2 rounded-md text-sm font-semibold text-muted-foreground hover:bg-accent" activeProps={{ className: "bg-accent text-accent-foreground" }}>
