@@ -63,6 +63,7 @@ interface Call {
 function IndexPage() {
   const { user, loading } = useAuth();
   const nav = useNavigate();
+  useEffect(() => { if (window.matchMedia("(display-mode: standalone)").matches) nav({ to: "/horas", replace: true }); }, [nav]);
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [calls, setCalls] = useState<Call[]>([]);
   const [ticket, setTicket] = useState("");

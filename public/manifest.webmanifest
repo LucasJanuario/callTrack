@@ -1,0 +1,10 @@
+{
+  "name": "Calltrack",
+  "short_name": "Calltrack",
+  "start_url": "/horas",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0073FD",
+  "icons": [{ "src": "/favicon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }]
+}
