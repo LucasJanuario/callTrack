@@ -102,6 +102,7 @@ export type Database = {
           hours_100: number
           hours_70: number
           id: string
+          pay_month: string | null
           user_id: string
         }
         Insert: {
@@ -110,6 +111,7 @@ export type Database = {
           hours_100?: number
           hours_70?: number
           id?: string
+          pay_month?: string | null
           user_id: string
         }
         Update: {
@@ -118,6 +120,7 @@ export type Database = {
           hours_100?: number
           hours_70?: number
           id?: string
+          pay_month?: string | null
           user_id?: string
         }
         Relationships: []
