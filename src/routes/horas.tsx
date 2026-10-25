@@ -28,6 +28,7 @@ interface OvertimeEntry {
   entry_date: string;
   hours_100: number;
   hours_70: number;
+  pay_month: string | null;
 }
 
 const HOURS_PER_MONTH = 220;
@@ -57,11 +58,13 @@ function HorasPage() {
   const [date, setDate] = useState(todayStr());
   const [h100, setH100] = useState("");
   const [h70, setH70] = useState("");
+  const [payMonth, setPayMonth] = useState(currentMonth());
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editDate, setEditDate] = useState("");
   const [editH100, setEditH100] = useState("");
   const [editH70, setEditH70] = useState("");
+  const [editPayMonth, setEditPayMonth] = useState("");
 
   useEffect(() => { if (!loading && !user) nav({ to: "/auth" }); }, [loading, user, nav]);
 
@@ -86,15 +89,11 @@ function HorasPage() {
 
   async function loadEntries() {
     if (!user) return;
-    const [y, m] = month.split("-").map(Number);
-    const start = `${month}-01`;
-    const end = new Date(y, m, 0).toISOString().slice(0, 10);
     const { data, error } = await supabase
       .from("overtime_entries")
-      .select("id,user_id,entry_date,hours_100,hours_70")
+      .select("id,user_id,entry_date,hours_100,hours_70,pay_month")
       .eq("user_id", user.id)
-      .gte("entry_date", start)
-      .lte("entry_date", end)
+      .eq("pay_month", month)
       .order("entry_date", { ascending: false });
     if (error) return toast.error(error.message);
     setEntries((data ?? []) as OvertimeEntry[]);
@@ -126,6 +125,7 @@ function HorasPage() {
       entry_date: date,
       hours_100: a,
       hours_70: b,
+      pay_month: payMonth || date.slice(0, 7),
     });
     if (error) return toast.error(error.message);
     await loadEntries();
@@ -139,6 +139,7 @@ function HorasPage() {
     setEditDate(e.entry_date);
     setEditH100(String(e.hours_100).replace(".", ","));
     setEditH70(String(e.hours_70).replace(".", ","));
+    setEditPayMonth(e.pay_month ?? e.entry_date.slice(0, 7));
   }
 
   async function saveEdit() {
@@ -147,7 +148,7 @@ function HorasPage() {
     const b = parseHours(editH70) ?? 0;
     const { error } = await supabase
       .from("overtime_entries")
-      .update({ entry_date: editDate, hours_100: a, hours_70: b })
+      .update({ entry_date: editDate, hours_100: a, hours_70: b, pay_month: editPayMonth || editDate.slice(0, 7) })
       .eq("id", editingId);
     if (error) return toast.error(error.message);
     await loadEntries();
@@ -177,7 +178,7 @@ function HorasPage() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2"><Clock className="size-6" /> Horas Extras</h1>
-            <p className="text-sm text-muted-foreground">Calcule quanto você fez em horas extras no mês.</p>
+            <p className="text-sm text-muted-foreground">Mostrando as horas que caem no pagamento do mês selecionado.</p>
           </div>
           <Input
             type="month"
@@ -213,10 +214,14 @@ function HorasPage() {
 
         <Card className="p-4 shadow-[var(--shadow-soft)] space-y-3">
           <div className="text-sm font-medium">Adicionar horas</div>
-          <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr_1fr_auto] gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr_1fr_auto_auto] gap-2">
             <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full sm:w-40" />
             <Input value={h100} onChange={(e) => setH100(e.target.value)} placeholder="Horas 100% (ex: 2)" inputMode="decimal" />
             <Input value={h70} onChange={(e) => setH70(e.target.value)} placeholder="Horas 70% (ex: 1,5)" inputMode="decimal" />
+            <label className="flex items-center gap-2 text-xs text-muted-foreground whitespace-nowrap">
+              Pagamento em
+              <Input type="month" value={payMonth} onChange={(e) => setPayMonth(e.target.value)} className="w-40" aria-label="Mês do pagamento" />
+            </label>
             <Button onClick={addEntry} className="bg-coral text-coral-foreground hover:bg-coral/85">
               <Plus className="size-4" /> Adicionar
             </Button>
@@ -258,6 +263,7 @@ function HorasPage() {
                     <th className="py-2 pr-4 font-medium">Data</th>
                     <th className="py-2 pr-4 font-medium">Horas 100%</th>
                     <th className="py-2 pr-4 font-medium">Horas 70%</th>
+                    <th className="py-2 pr-4 font-medium">Pagamento</th>
                     <th className="py-2 pr-4 font-medium">Valor do dia</th>
                     <th className="py-2 font-medium text-right">Ações</th>
                   </tr>
@@ -273,6 +279,7 @@ function HorasPage() {
                             <td className="py-2 pr-4"><Input type="date" value={editDate} onChange={(ev) => setEditDate(ev.target.value)} className="h-8 w-36 text-sm" /></td>
                             <td className="py-2 pr-4"><Input value={editH100} onChange={(ev) => setEditH100(ev.target.value)} className="h-8 w-24 text-sm" inputMode="decimal" /></td>
                             <td className="py-2 pr-4"><Input value={editH70} onChange={(ev) => setEditH70(ev.target.value)} className="h-8 w-24 text-sm" inputMode="decimal" /></td>
+                            <td className="py-2 pr-4"><Input type="month" value={editPayMonth} onChange={(ev) => setEditPayMonth(ev.target.value)} className="h-8 w-36 text-sm" /></td>
                             <td className="py-2 pr-4 text-muted-foreground">—</td>
                             <td className="py-2 text-right">
                               <div className="flex justify-end gap-1">
@@ -286,6 +293,7 @@ function HorasPage() {
                             <td className="py-2 pr-4">{new Date(e.entry_date + "T12:00:00").toLocaleDateString("pt-BR")}</td>
                             <td className="py-2 pr-4">{Number(e.hours_100).toLocaleString("pt-BR")}h</td>
                             <td className="py-2 pr-4">{Number(e.hours_70).toLocaleString("pt-BR")}h</td>
+                            <td className="py-2 pr-4">{(e.pay_month ?? e.entry_date.slice(0, 7)).split("-").reverse().join("/")}</td>
                             <td className="py-2 pr-4">{savedSalary != null ? brl(dayValue) : "—"}</td>
                             <td className="py-2 text-right">
                               <div className="flex justify-end gap-1">
