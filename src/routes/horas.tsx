@@ -6,7 +6,7 @@ import { AppHeader } from "@/components/AppHeader";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Clock, Plus, Trash2, Pencil, Save, X } from "lucide-react";
+import { Clock, Plus, Trash2, Pencil, Save, X, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { calcOvertime } from "@/lib/overtime";
 
@@ -65,6 +65,12 @@ function HorasPage() {
   const [editH100, setEditH100] = useState("");
   const [editH70, setEditH70] = useState("");
   const [editPayMonth, setEditPayMonth] = useState("");
+  const [showSalary, setShowSalary] = useState(false);
+
+  useEffect(() => { setShowSalary(localStorage.getItem("horas_show_salary") === "1"); }, []);
+  function toggleShowSalary() {
+    setShowSalary((v) => { localStorage.setItem("horas_show_salary", v ? "0" : "1"); return !v; });
+  }
 
   useEffect(() => { if (!loading && !user) nav({ to: "/auth" }); }, [loading, user, nav]);
 
@@ -194,19 +200,31 @@ function HorasPage() {
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">R$</span>
               <Input
+                type={showSalary ? "text" : "password"}
                 value={salary}
                 onChange={(e) => setSalary(e.target.value)}
                 placeholder="3.000,00"
                 inputMode="decimal"
-                className="pl-9 w-44"
+                autoComplete="off"
+                className="pl-9 pr-10 w-48"
               />
+              <button
+                type="button"
+                onClick={toggleShowSalary}
+                aria-label={showSalary ? "Ocultar salário" : "Mostrar salário"}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                {showSalary ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              </button>
             </div>
             <Button onClick={saveSalary} className="bg-coral text-coral-foreground hover:bg-coral/85">
               <Save className="size-4" /> Salvar salário
             </Button>
             {savedSalary != null && (
               <span className="text-xs text-muted-foreground">
-                Hora normal: {brl(totals.hourly)} · Hora 100%: {brl(totals.hourly * 2)} · Hora 70%: {brl(totals.hourly * 1.7)}
+                {showSalary
+                  ? <>Hora normal: {brl(totals.hourly)} · Hora 100%: {brl(totals.hourly * 2)} · Hora 70%: {brl(totals.hourly * 1.7)}</>
+                  : <>Hora normal: R$ •••• · Hora 100%: R$ •••• · Hora 70%: R$ ••••</>}
               </span>
             )}
           </div>
